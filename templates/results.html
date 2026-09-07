@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Your Results | SkillBridge AI</title>
+
+    <link rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <nav class="navbar">
+
+        <div class="logo">
+            SkillBridge <span>AI</span>
+        </div>
+
+        <a href="/" class="back-link">
+            ← Back to Home
+        </a>
+
+    </nav>
+
+
+    <section class="results-page">
+
+        <div class="results-container">
+
+
+            <!-- HEADER -->
+
+            <div class="results-header">
+
+                <p class="section-tag">YOUR PERSONALIZED REPORT</p>
+
+                <h1>
+                    {{ name }}, here's your Skill Intelligence Report.
+                </h1>
+
+                <p>
+                    Based on your profile, technical skills, career interest,
+                    and assessment performance.
+                </p>
+
+            </div>
+
+
+            <!-- SCORE CARD -->
+
+            <div class="score-card">
+
+                <div class="score-left">
+
+                    <p class="score-label">
+                        TECHNICAL ASSESSMENT SCORE
+                    </p>
+
+                    <div class="score-number">
+                        {{ percentage }}%
+                    </div>
+
+                    <p class="score-text">
+                        You answered {{ score }} out of 3 questions correctly.
+                    </p>
+
+                </div>
+
+
+                <div class="score-right">
+
+                    <h2>{{ readiness }} Career Readiness</h2>
+
+                    <p>
+                        {{ readiness_message }}
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- PROFILE SKILLS -->
+
+            <div class="user-skills-card">
+
+                <p class="section-tag">YOUR DECLARED SKILLS</p>
+
+                <div class="skill-tags">
+
+                    {% for skill in skills %}
+
+                        <span class="skill-tag user-skill">
+                            {{ skill.title() }}
+                        </span>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+
+            <!-- BEST CAREER -->
+
+            <h2 class="results-section-title">
+                🏆 Best Career Match
+            </h2>
+
+            <div class="best-career-card">
+
+                <div>
+
+                    <p class="section-tag">
+                        PERSONALIZED RECOMMENDATION
+                    </p>
+
+                    <h2>{{ best_career.title }}</h2>
+
+                    <p class="career-category">
+                        {{ best_career.category }}
+                    </p>
+
+                    <p class="career-description">
+                        {{ best_career.description }}
+                    </p>
+
+                </div>
+
+                <div class="match-score">
+
+                    <span>{{ best_career.match }}%</span>
+
+                    <small>Career Match</small>
+
+                </div>
+
+            </div>
+
+
+            <!-- TOP CAREER MATCHES -->
+
+            <h2 class="results-section-title">
+                Top Career Matches
+            </h2>
+
+            <div class="jobs-grid">
+
+                {% for career in careers %}
+
+                <div class="job-card">
+
+                    <div class="job-card-header">
+
+                        <div>
+
+                            <p class="section-tag">
+                                {{ career.category }}
+                            </p>
+
+                            <h2>{{ career.title }}</h2>
+
+                        </div>
+
+                        <div class="job-match-badge">
+                            {{ career.match }}%
+                        </div>
+
+                    </div>
+
+
+                    <p class="job-description">
+                        {{ career.description }}
+                    </p>
+
+
+                    <div class="skills-section">
+
+                        <h4>✓ Matching Skills</h4>
+
+                        <div class="skill-tags">
+
+                            {% for skill in career.matching_skills %}
+
+                                <span class="skill-tag matched">
+                                    {{ skill.title() }}
+                                </span>
+
+                            {% else %}
+
+                                <span class="no-skills">
+                                    No direct skill matches yet
+                                </span>
+
+                            {% endfor %}
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="skills-section">
+
+                        <h4>⚠ Skills to Develop</h4>
+
+                        <div class="skill-tags">
+
+                            {% for skill in career.missing_skills %}
+
+                                <span class="skill-tag missing">
+                                    {{ skill.title() }}
+                                </span>
+
+                            {% endfor %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+
+            <!-- ROADMAP -->
+
+            <h2 class="results-section-title">
+                🚀 Your Personalized Learning Roadmap
+            </h2>
+
+            <div class="roadmap">
+
+                {% for item in roadmap %}
+
+                <div class="roadmap-item">
+
+                    <div class="roadmap-number">
+                        {{ loop.index }}
+                    </div>
+
+                    <div>
+
+                        <h3>{{ item.step }}</h3>
+
+                        <p>
+                            {{ item.description }}
+                        </p>
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+
+            <!-- ACTIONS -->
+
+            <div class="results-actions">
+
+                <a href="/profile" class="secondary-btn">
+                    Update Profile
+                </a>
+
+                <a href="/assessment" class="primary-btn">
+                    Retake Assessment →
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</body>
+
+</html>

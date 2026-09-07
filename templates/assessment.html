@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Skill Assessment | SkillBridge AI</title>
+
+    <link rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="logo">
+            SkillBridge <span>AI</span>
+        </div>
+
+        <a href="/profile" class="back-link">← Back to Profile</a>
+    </nav>
+
+
+    <section class="assessment-page">
+
+        <div class="assessment-container">
+
+            <div class="assessment-header">
+
+                <p class="section-tag">STEP 2 OF 3</p>
+
+                <h1>Discover Your Skill Strengths.</h1>
+
+                <p>
+                    Answer these questions to evaluate your current technical knowledge.
+                </p>
+
+            </div>
+
+
+            <!-- FORM STARTS HERE -->
+            <form action="/results" method="POST">
+
+                <!-- QUESTION 1 -->
+                <div class="question-card">
+
+                    <span class="question-number">01</span>
+
+                    <h3>Which language is commonly used for backend development?</h3>
+
+                    <div class="options">
+
+                        <label class="option">
+                            <input type="radio" name="q1" value="wrong">
+                            HTML
+                        </label>
+
+                        <label class="option">
+                            <input type="radio" name="q1" value="correct">
+                            Python
+                        </label>
+
+                        <label class="option">
+                            <input type="radio" name="q1" value="wrong">
+                            CSS
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                <!-- QUESTION 2 -->
+                <div class="question-card">
+
+                    <span class="question-number">02</span>
+
+                    <h3>What does SQL mainly help you work with?</h3>
+
+                    <div class="options">
+
+                        <label class="option">
+                            <input type="radio" name="q2" value="correct">
+                            Databases
+                        </label>
+
+                        <label class="option">
+                            <input type="radio" name="q2" value="wrong">
+                            Images
+                        </label>
+
+                        <label class="option">
+                            <input type="radio" name="q2" value="wrong">
+                            Hardware
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                <!-- QUESTION 3 -->
+                <div class="question-card">
+
+                    <span class="question-number">03</span>
+
+                    <h3>Which tool is commonly used for version control?</h3>
+
+                    <div class="options">
+
+                        <label class="option">
+                            <input type="radio" name="q3" value="correct">
+                            Git
+                        </label>
+
+                        <label class="option">
+                            <input type="radio" name="q3" value="wrong">
+                            Excel
+                        </label>
+
+                        <label class="option">
+                            <input type="radio" name="q3" value="wrong">
+                            Photoshop
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                <button type="submit" class="primary-btn assessment-btn">
+                    Analyze My Skills →
+                </button>
+
+            </form>
+            <!-- FORM ENDS HERE -->
+
+        </div>
+
+    </section>
+
+</body>
+
+</html>
