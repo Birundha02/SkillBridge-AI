@@ -1,0 +1,74 @@
+[
+  {
+    "id": 1,
+    "title": "Python Developer Intern",
+    "company": "TechNova",
+    "location": "Chennai",
+    "type": "Internship",
+    "skills": ["Python", "Flask", "SQL"],
+    "experience": "Fresher"
+  },
+  {
+    "id": 2,
+    "title": "Frontend Developer Intern",
+    "company": "WebWorks",
+    "location": "Bangalore",
+    "type": "Internship",
+    "skills": ["HTML", "CSS", "JavaScript", "React"],
+    "experience": "Fresher"
+  },
+  {
+    "id": 3,
+    "title": "Data Analyst Intern",
+    "company": "DataSphere",
+    "location": "Hyderabad",
+    "type": "Internship",
+    "skills": ["Python", "SQL", "Excel", "Power BI"],
+    "experience": "Fresher"
+  },
+  {
+    "id": 4,
+    "title": "Cybersecurity Intern",
+    "company": "SecureNet",
+    "location": "Pune",
+    "type": "Internship",
+    "skills": ["Networking", "Linux", "Cybersecurity", "Python"],
+    "experience": "Fresher"
+  },
+  {
+    "id": 5,
+    "title": "Cloud Support Intern",
+    "company": "CloudCore",
+    "location": "Mumbai",
+    "type": "Internship",
+    "skills": ["AWS", "Linux", "Networking", "Python"],
+    "experience": "Fresher"
+  },
+  {
+    "id": 6,
+    "title": "Full Stack Developer Intern",
+    "company": "CodeCraft",
+    "location": "Bangalore",
+    "type": "Internship",
+    "skills": ["HTML", "CSS", "JavaScript", "Python", "SQL"],
+    "experience": "Fresher"
+  },
+  {
+    "id": 7,
+    "title": "Junior Backend Developer",
+    "company": "InnovateLabs",
+    "location": "Chennai",
+    "type": "Full-time",
+    "skills": ["Python", "Flask", "SQL", "Git"],
+    "experience": "0-1 years"
+  },
+  {
+    "id": 8,
+    "title": "Junior Data Scientist",
+    "company": "InsightWorks",
+    "location": "Hyderabad",
+    "type": "Full-time",
+    "skills": ["Python", "SQL", "Machine Learning", "Pandas"],
+    "experience": "0-1 years"
+  }
+]

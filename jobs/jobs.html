@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillSync AI | Job Opportunities</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fb;
+            color: #1f2937;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #6b7280;
+            font-size: 16px;
+        }
+
+        .filters {
+            background: white;
+            padding: 20px;
+            border-radius: 14px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+        }
+
+        .filters h3 {
+            margin-bottom: 15px;
+        }
+
+        .filter-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 12px;
+        }
+
+        .filter-row input,
+        .filter-row select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+        }
+
+        .filter-row input:focus,
+        .filter-row select:focus {
+            outline: none;
+            border-color: #111827;
+        }
+
+        .jobs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .job-card {
+            background: white;
+            padding: 22px;
+            border-radius: 14px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+            transition: transform 0.2s ease;
+        }
+
+        .job-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .job-card h2 {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .company {
+            color: #4b5563;
+            margin-bottom: 15px;
+        }
+
+        .job-info {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .tag {
+            background: #eef2ff;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+
+        .match {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 18px;
+        }
+
+        .skill-section {
+            margin-bottom: 18px;
+        }
+
+        .skill-section h4 {
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .skills span {
+            display: inline-block;
+            padding: 6px 9px;
+            border-radius: 6px;
+            margin: 4px 4px 0 0;
+            font-size: 13px;
+        }
+
+        .matched-skill {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .missing-skill {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .no-missing {
+            color: #166534;
+            font-size: 13px;
+        }
+
+        .apply-btn {
+            display: inline-block;
+            text-decoration: none;
+            background: #111827;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .no-jobs {
+            background: white;
+            padding: 30px;
+            border-radius: 14px;
+            text-align: center;
+            color: #6b7280;
+            grid-column: 1 / -1;
+        }
+
+        @media (max-width: 800px) {
+            .filter-row {
+                grid-template-columns: 1fr;
+            }
+
+            body {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1>Job Opportunities</h1>
+        <p>Find opportunities that match your skills.</p>
+    </div>
+
+    <div class="filters">
+
+        <h3>Find Your Opportunity</h3>
+
+        <div class="filter-row">
+
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="Search jobs, companies, or skills..."
+            >
+
+            <select id="locationFilter">
+                <option value="">All Locations</option>
+                <option value="Chennai">Chennai</option>
+                <option value="Bangalore">Bangalore</option>
+                <option value="Hyderabad">Hyderabad</option>
+                <option value="Pune">Pune</option>
+                <option value="Mumbai">Mumbai</option>
+            </select>
+
+            <select id="typeFilter">
+                <option value="">All Types</option>
+                <option value="Internship">Internship</option>
+                <option value="Full-time">Full-time</option>
+            </select>
+
+            <select id="matchFilter">
+                <option value="0">Any Match</option>
+                <option value="40">40%+ Match</option>
+                <option value="50">50%+ Match</option>
+                <option value="60">60%+ Match</option>
+                <option value="70">70%+ Match</option>
+            </select>
+
+        </div>
+
+    </div>
+
+    <div class="jobs-grid" id="jobsContainer">
+
+        {% for job in jobs %}
+
+        <div
+            class="job-card"
+            data-location="{{ job['location'] }}"
+            data-type="{{ job['type'] }}"
+            data-match="{{ job['match_percentage'] }}"
+        >
+
+            <h2>{{ job["title"] }}</h2>
+
+            <div class="company">
+                {{ job["company"] }}
+            </div>
+
+            <div class="job-info">
+                <span class="tag">{{ job["location"] }}</span>
+                <span class="tag">{{ job["type"] }}</span>
+
+                {% if job["experience"] %}
+                    <span class="tag">{{ job["experience"] }}</span>
+                {% endif %}
+            </div>
+
+            <div class="match">
+                {{ job["match_percentage"] }}% Skill Match
+            </div>
+
+            <div class="skill-section">
+
+                <h4>✅ Skills You Have</h4>
+
+                <div class="skills">
+
+                    {% for skill in job["matched_skills"] %}
+                        <span class="matched-skill">{{ skill }}</span>
+                    {% endfor %}
+
+                    {% if not job["matched_skills"] %}
+                        <span class="no-missing">No matching skills yet</span>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            <div class="skill-section">
+
+                <h4>📚 Skills To Learn</h4>
+
+                <div class="skills">
+
+                    {% for skill in job["missing_skills"] %}
+                        <span class="missing-skill">{{ skill }}</span>
+                    {% endfor %}
+
+                    {% if not job["missing_skills"] %}
+                        <span class="no-missing">
+                            You have all the required skills!
+                        </span>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            <a href="{{ url_for('job_details', job_id=job.id) }}" class="apply-btn">
+                View Opportunity
+            </a>
+
+        </div>
+
+        {% else %}
+
+        <div class="no-jobs">
+            <h2>No matching jobs found</h2>
+            <p>
+                Try adding more skills to improve your job matches.
+            </p>
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+<script>
+
+    const searchInput = document.getElementById("searchInput");
+    const locationFilter = document.getElementById("locationFilter");
+    const typeFilter = document.getElementById("typeFilter");
+    const matchFilter = document.getElementById("matchFilter");
+
+    const jobCards = document.querySelectorAll(".job-card");
+
+    function filterJobs() {
+
+        const searchText =
+            searchInput.value.toLowerCase();
+
+        const selectedLocation =
+            locationFilter.value.toLowerCase();
+
+        const selectedType =
+            typeFilter.value.toLowerCase();
+
+        const minimumMatch =
+            Number(matchFilter.value);
+
+        jobCards.forEach(function(card) {
+
+            const jobText =
+                card.innerText.toLowerCase();
+
+            const location =
+                card.dataset.location.toLowerCase();
+
+            const type =
+                card.dataset.type.toLowerCase();
+
+            const match =
+                Number(card.dataset.match);
+
+            const matchesSearch =
+                jobText.includes(searchText);
+
+            const matchesLocation =
+                selectedLocation === "" ||
+                location === selectedLocation;
+
+            const matchesType =
+                selectedType === "" ||
+                type === selectedType;
+
+            const matchesPercentage =
+                match >= minimumMatch;
+
+            if (
+                matchesSearch &&
+                matchesLocation &&
+                matchesType &&
+                matchesPercentage
+            ) {
+                card.style.display = "block";
+            } else {
+                card.style.display = "none";
+            }
+
+        });
+
+    }
+
+    searchInput.addEventListener(
+        "input",
+        filterJobs
+    );
+
+    locationFilter.addEventListener(
+        "change",
+        filterJobs
+    );
+
+    typeFilter.addEventListener(
+        "change",
+        filterJobs
+    );
+
+    matchFilter.addEventListener(
+        "change",
+        filterJobs
+    );
+
+</script>
+
+</body>
+</html>
