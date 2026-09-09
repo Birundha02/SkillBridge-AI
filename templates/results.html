@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Your Results | SkillBridge AI</title>
+    <title>Skill Intelligence Report | SkillBridge AI</title>
 
     <link rel="stylesheet"
         href="{{ url_for('static', filename='style.css') }}">
@@ -32,70 +32,472 @@
 
 
             <!-- HEADER -->
-
             <div class="results-header">
 
-                <p class="section-tag">YOUR PERSONALIZED REPORT</p>
+                <p class="section-tag">AI-POWERED INTELLIGENCE REPORT</p>
 
                 <h1>
-                    {{ name }}, here's your Skill Intelligence Report.
+                    {{ name }}, here's your Career Readiness Report.
                 </h1>
 
                 <p>
-                    Based on your profile, technical skills, career interest,
-                    and assessment performance.
+                    Synthesized from your profile, declared competencies, career preference in
+                    <strong>{{ career_interest }}</strong>, and technical assessment performance.
                 </p>
 
             </div>
 
 
-            <!-- SCORE CARD -->
+            <!-- FEATURE 1: SKILL READINESS DASHBOARD -->
+            <section class="dashboard-section">
 
-            <div class="score-card">
+                <div class="readiness-dashboard-grid">
 
-                <div class="score-left">
-
-                    <p class="score-label">
-                        TECHNICAL ASSESSMENT SCORE
-                    </p>
-
-                    <div class="score-number">
-                        {{ percentage }}%
+                    <!-- Metric 1: Overall Career Readiness -->
+                    <div class="metric-card metric-featured">
+                        <div class="metric-card-top">
+                            <span class="metric-title">Overall Career Readiness</span>
+                            <span class="metric-tag tag-readiness">{{ readiness_badge }}</span>
+                        </div>
+                        <div class="metric-value-wrap">
+                            <span class="metric-number">{{ overall_readiness }}%</span>
+                        </div>
+                        <div class="metric-bar-track">
+                            <div class="metric-bar-fill fill-dark" style="width: {{ overall_readiness }}%;"></div>
+                        </div>
+                        <p class="metric-hint">Weighted composite of skills, match fit, and technical assessment</p>
                     </div>
 
-                    <p class="score-text">
-                        You answered {{ score }} out of 3 questions correctly.
-                    </p>
+                    <!-- Metric 2: Technical Assessment Score -->
+                    <div class="metric-card">
+                        <div class="metric-card-top">
+                            <span class="metric-title">Technical Assessment</span>
+                            <span class="metric-tag">{{ score }}/3 Correct</span>
+                        </div>
+                        <div class="metric-value-wrap">
+                            <span class="metric-number">{{ percentage }}%</span>
+                        </div>
+                        <div class="metric-bar-track">
+                            <div class="metric-bar-fill" style="width: {{ percentage }}%;"></div>
+                        </div>
+                        <p class="metric-hint">Core technical fundamentals & problem-solving evaluation</p>
+                    </div>
+                    <!-- PROFILE SKILLS -->
+
+<div class="user-skills-card">
+
+    <p class="section-tag">YOUR DECLARED SKILLS</p>
+
+    <div class="skill-tags">
+
+        {% for skill in skills %}
+
+            <span class="skill-tag user-skill">
+                {{ skill.title() }}
+            </span>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+
+<!-- PASTE SKILL GAP ANALYSIS HERE -->
+
+<!-- SKILL GAP ANALYSIS -->
+
+<h2 class="results-section-title">
+    📊 Skill Gap Analysis
+</h2>
+
+<div class="skill-gap-card">
+
+    <div class="skill-gap-header">
+
+        <div>
+            <p class="section-tag">
+                YOUR CAREER READINESS
+            </p>
+
+            <h2>{{ best_career.title }}</h2>
+        </div>
+
+        <div class="skill-percentage">
+            {{ skill_coverage }}%
+        </div>
+
+    </div>
+
+    <div class="progress-container">
+        <div
+            class="progress-bar"
+            style="width: {{ skill_coverage }}%;"
+        ></div>
+    </div>
+
+    <div class="skill-stats">
+
+        <div class="stat-box">
+            <span class="stat-number">{{ matching_count }}</span>
+            <span class="stat-label">Matching Skills</span>
+        </div>
+
+        <div class="stat-box">
+            <span class="stat-number">{{ missing_count }}</span>
+            <span class="stat-label">Skills to Develop</span>
+        </div>
+
+        <div class="stat-box">
+            <span class="stat-number">{{ total_required_skills }}</span>
+            <span class="stat-label">Required Skills</span>
+        </div>
+
+    </div>
+
+    <div class="gap-section">
+
+        <h3>🎯 Priority Skills to Learn</h3>
+
+        <div class="skill-tags">
+
+            {% for skill in skill_gaps %}
+
+                <span class="skill-tag missing">
+                    {{ skill.title() }}
+                </span>
+
+            {% else %}
+
+                <p class="no-skills">
+                    🎉 Great! You currently have all the required skills.
+                </p>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- BEST CAREER -->
+
+<h2 class="results-section-title">
+    🏆 Best Career Match
+</h2>
+
+                    <!-- Metric 3: Best Career Match -->
+                    <div class="metric-card">
+                        <div class="metric-card-top">
+                            <span class="metric-title">Best Career Match</span>
+                            <span class="metric-tag tag-best">{{ best_career.title }}</span>
+                        </div>
+                        <div class="metric-value-wrap">
+                            <span class="metric-number">{{ best_career.match }}%</span>
+                        </div>
+                        <div class="metric-bar-track">
+                            <div class="metric-bar-fill" style="width: {{ best_career.match }}%;"></div>
+                        </div>
+                        <p class="metric-hint">Algorithmic role fit based on your declared profile & goals</p>
+                    </div>
+
+                    <!-- Metric 4: Skill Coverage -->
+                    <div class="metric-card">
+                        <div class="metric-card-top">
+                            <span class="metric-title">Skill Coverage</span>
+                            <span class="metric-tag">{{ matching_count }}/{{ total_required_skills }} Skills</span>
+                        </div>
+                        <div class="metric-value-wrap">
+                            <span class="metric-number">{{ skill_coverage }}%</span>
+                        </div>
+                        <div class="metric-bar-track">
+                            <div class="metric-bar-fill" style="width: {{ skill_coverage }}%;"></div>
+                        </div>
+                        <p class="metric-hint">Prerequisite skill overlap against {{ best_career.title }} role</p>
+                    </div>
 
                 </div>
 
+                <!-- Readiness Summary Banner -->
+                <div class="readiness-summary-card">
+                    <div class="readiness-summary-left">
+                        <span class="summary-badge-icon">📊</span>
+                        <div>
+                            <h3>{{ readiness }} Career Readiness Assessment</h3>
+                            <p>{{ readiness_message }}</p>
+                        </div>
+                    </div>
+                </div>
 
-                <div class="score-right">
+            </section>
 
-                    <h2>{{ readiness }} Career Readiness</h2>
 
-                    <p>
-                        {{ readiness_message }}
-                    </p>
+            <!-- USER DECLARED SKILLS -->
+            <div class="user-skills-card">
+
+                <div class="user-skills-header">
+                    <div>
+                        <p class="section-tag">PROFILE COMPETENCIES</p>
+                        <h3>Your Declared Skills</h3>
+                    </div>
+                    <span class="skill-count-badge">{{ skills|length }} Skills Profiled</span>
+                </div>
+
+                <div class="skill-tags">
+                    {% for skill in skills %}
+                        <span class="skill-tag user-skill">
+                            {{ skill.title() }}
+                        </span>
+                    {% else %}
+                        <span class="no-skills">No skills declared. Return to profile to add skills.</span>
+                    {% endfor %}
+                </div>
+
+            </div>
+
+
+            <!-- FEATURE 2: BEST CAREER & "WHY THIS CAREER MATCHES YOU" -->
+            <div class="best-career-wrapper">
+
+                <h2 class="results-section-title">
+                    🏆 Top Career Recommendation
+                </h2>
+
+                <div class="best-career-card">
+
+                    <div class="best-career-main">
+
+                        <p class="section-tag">#1 ALGORITHMIC MATCH</p>
+
+                        <h2>{{ best_career.title }}</h2>
+
+                        <p class="career-category">
+                            {{ best_career.category }}
+                        </p>
+
+                        <p class="career-description">
+                            {{ best_career.description }}
+                        </p>
+
+                        <!-- Dynamic Explanation Box -->
+                        <div class="match-explanation-box">
+                            <div class="explanation-title">
+                                <span class="explanation-icon">💡</span>
+                                <strong>Why This Career Matches You</strong>
+                            </div>
+                            <p class="explanation-content">
+                                {{ match_explanation }}
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <div class="best-career-score-panel">
+                        <div class="match-score">
+                            <span>{{ best_career.match }}%</span>
+                            <small>Career Match</small>
+                        </div>
+                        <div class="match-status-pill">Top Aligned Track</div>
+                    </div>
 
                 </div>
 
             </div>
 
 
-            <!-- PROFILE SKILLS -->
+            <!-- FEATURE: REAL-TIME AI CAREER MENTOR -->
+            {% if ai_mentor %}
+            <div class="ai-mentor-wrapper">
 
-            <div class="user-skills-card">
+                <div class="section-heading-group">
+                    <div class="ai-mentor-badge-row">
+                        <span class="ai-badge">🤖 POWERED BY OPENAI</span>
+                        {% if ai_mentor.source %}
+                            <span class="ai-source-tag">{{ ai_mentor.source }}</span>
+                        {% endif %}
+                    </div>
+                    <h2 class="results-section-title">
+                        🤖 AI Career Mentor
+                    </h2>
+                    <p class="section-subtitle">
+                        Personalized real-time strategic counsel synthesized for <strong>{{ name }}</strong> based on your declared profile, assessment score ({{ percentage }}%), and target role as <strong>{{ best_career.title }}</strong>.
+                    </p>
+                </div>
 
-                <p class="section-tag">YOUR DECLARED SKILLS</p>
+                <div class="ai-mentor-container">
 
-                <div class="skill-tags">
+                    <!-- Strategic Career Assessment Card -->
+                    <div class="ai-mentor-banner">
+                        <div class="ai-mentor-banner-icon">🎯</div>
+                        <div class="ai-mentor-banner-content">
+                            <span class="mentor-eyebrow">STRATEGIC CAREER ASSESSMENT</span>
+                            <h3>Executive Readiness Diagnosis</h3>
+                            <p>{{ ai_mentor.career_assessment }}</p>
+                        </div>
+                    </div>
 
-                    {% for skill in skills %}
+                    <!-- 2-Column Grid: Strengths & Improvements -->
+                    <div class="ai-mentor-two-col">
 
-                        <span class="skill-tag user-skill">
-                            {{ skill.title() }}
-                        </span>
+                        <!-- Key Strengths Card -->
+                        <div class="ai-mentor-card">
+                            <div class="ai-mentor-card-header">
+                                <span class="ai-card-icon">⚡</span>
+                                <div>
+                                    <span class="mentor-card-tag">VALIDATED PROFILE ASSETS</span>
+                                    <h4>Key Strengths</h4>
+                                </div>
+                            </div>
+                            <ul class="ai-mentor-list">
+                                {% for strength in ai_mentor.key_strengths %}
+                                <li class="ai-mentor-list-item">
+                                    <span class="ai-list-bullet">✓</span>
+                                    <span>{{ strength }}</span>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+
+                        <!-- Critical Skills to Improve Card -->
+                        <div class="ai-mentor-card">
+                            <div class="ai-mentor-card-header">
+                                <span class="ai-card-icon">📈</span>
+                                <div>
+                                    <span class="mentor-card-tag">PRIORITY GROWTH TARGETS</span>
+                                    <h4>Critical Skills to Improve</h4>
+                                </div>
+                            </div>
+                            <ul class="ai-mentor-list">
+                                {% for item in ai_mentor.critical_skills_to_improve %}
+                                <li class="ai-mentor-list-item">
+                                    <span class="ai-list-bullet bullet-improvement">▲</span>
+                                    <span>{{ item }}</span>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+
+                    </div>
+
+                    <!-- Practical Project Recommendation Card -->
+                    {% if ai_mentor.project_recommendation %}
+                    <div class="ai-mentor-card ai-project-card">
+                        <div class="ai-mentor-card-header">
+                            <span class="ai-card-icon">🛠️</span>
+                            <div>
+                                <span class="mentor-card-tag">HIGH-IMPACT PORTFOLIO ACCELERATOR</span>
+                                <h4>Practical Project Recommendation: {{ ai_mentor.project_recommendation.title }}</h4>
+                            </div>
+                        </div>
+                        <p class="ai-project-desc">
+                            {{ ai_mentor.project_recommendation.description }}
+                        </p>
+                        {% if ai_mentor.project_recommendation.technologies %}
+                        <div class="ai-project-stack">
+                            <span class="tech-label">Recommended Tech Stack:</span>
+                            <div class="skill-tags">
+                                {% for tech in ai_mentor.project_recommendation.technologies %}
+                                <span class="skill-tag mentor-tech-tag">{{ tech }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    <!-- Career Advice Conclusion -->
+                    <div class="ai-mentor-conclusion">
+                        <div class="conclusion-quote-icon">“</div>
+                        <div class="conclusion-content">
+                            <span class="conclusion-tag">MENTOR'S STRATEGIC TAKEAWAY</span>
+                            <p>{{ ai_mentor.conclusion }}</p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            {% endif %}
+
+
+            <!-- FEATURE 2 (CONTINUED): SMART CAREER COMPARISON (TOP 3 RANKED) -->
+            <div class="career-comparison-wrapper">
+
+                <div class="section-heading-group">
+                    <h2 class="results-section-title">
+                        📊 Smart Career Comparison
+                    </h2>
+                    <p class="section-subtitle">
+                        Top matched career pathways ranked by algorithmic alignment, required skill overlap, and market viability.
+                    </p>
+                </div>
+
+                <div class="jobs-grid comparison-grid">
+
+                    {% for career in careers %}
+
+                    <div class="job-card comparison-card {% if loop.first %}card-featured{% endif %}">
+
+                        <!-- Rank Header -->
+                        <div class="job-rank-header">
+                            {% if loop.index == 1 %}
+                                <span class="rank-badge rank-gold">🥇 Best Match</span>
+                            {% elif loop.index == 2 %}
+                                <span class="rank-badge rank-silver">🥈 Second Match</span>
+                            {% else %}
+                                <span class="rank-badge rank-bronze">🥉 Third Match</span>
+                            {% endif %}
+                            <span class="rank-category-tag">{{ career.category }}</span>
+                        </div>
+
+                        <div class="job-card-header">
+                            <div>
+                                <h2>{{ career.title }}</h2>
+                            </div>
+                            <div class="job-match-badge">
+                                {{ career.match }}%
+                            </div>
+                        </div>
+
+                        <p class="job-description">
+                            {{ career.description }}
+                        </p>
+
+                        <!-- Matching Skills -->
+                        <div class="skills-section">
+                            <h4>✓ Matching Skills ({{ career.matching_skills|length }})</h4>
+                            <div class="skill-tags">
+                                {% for skill in career.matching_skills %}
+                                    <span class="skill-tag matched">
+                                        {{ skill.title() }}
+                                    </span>
+                                {% else %}
+                                    <span class="no-skills">
+                                        No direct skill matches yet
+                                    </span>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Missing Skills -->
+                        <div class="skills-section">
+                            <h4>⚠ Skills to Develop ({{ career.missing_skills|length }})</h4>
+                            <div class="skill-tags">
+                                {% for skill in career.missing_skills %}
+                                    <span class="skill-tag missing">
+                                        {{ skill.title() }}
+                                    </span>
+                                {% else %}
+                                    <span class="no-skills">
+                                        Full skill set verified!
+                                    </span>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                    </div>
 
                     {% endfor %}
 
@@ -104,164 +506,239 @@
             </div>
 
 
-            <!-- BEST CAREER -->
+            <!-- FEATURE 3: ADVANCED SKILL GAP ANALYSIS -->
+            <div class="skill-gap-wrapper">
 
-            <h2 class="results-section-title">
-                🏆 Best Career Match
-            </h2>
-
-            <div class="best-career-card">
-
-                <div>
-
-                    <p class="section-tag">
-                        PERSONALIZED RECOMMENDATION
+                <div class="section-heading-group">
+                    <h2 class="results-section-title">
+                        🎯 Advanced Skill Gap Analysis
+                    </h2>
+                    <p class="section-subtitle">
+                        Deep-dive breakdown of competencies required for <strong>{{ best_career.title }}</strong>, prioritized by career impact.
                     </p>
-
-                    <h2>{{ best_career.title }}</h2>
-
-                    <p class="career-category">
-                        {{ best_career.category }}
-                    </p>
-
-                    <p class="career-description">
-                        {{ best_career.description }}
-                    </p>
-
                 </div>
 
-                <div class="match-score">
+                <div class="gap-analysis-grid">
 
-                    <span>{{ best_career.match }}%</span>
+                    <!-- Column 1: Critical Skills -->
+                    <div class="gap-card gap-critical">
+                        <div class="gap-card-header">
+                            <span class="gap-status-indicator">🔴</span>
+                            <div>
+                                <h3>Critical Skills to Learn First</h3>
+                                <p>Core foundational blockers to address immediately</p>
+                            </div>
+                        </div>
 
-                    <small>Career Match</small>
+                        <div class="gap-items-list">
+                            {% for item in skill_gaps.critical %}
+                            <div class="gap-item">
+                                <div class="gap-item-top">
+                                    <span class="gap-skill-name">{{ item.name }}</span>
+                                    <span class="gap-priority-pill pill-critical">High Priority</span>
+                                </div>
+                                <p class="gap-item-desc">{{ item.reason }}</p>
+                            </div>
+                            {% else %}
+                            <div class="gap-empty-state">
+                                <span>🎉</span>
+                                <p>No critical deficiencies identified! You possess all primary prerequisites.</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Column 2: Important Skills -->
+                    <div class="gap-card gap-important">
+                        <div class="gap-card-header">
+                            <span class="gap-status-indicator">🟡</span>
+                            <div>
+                                <h3>Important Skills to Develop</h3>
+                                <p>Secondary tools and frameworks to accelerate mastery</p>
+                            </div>
+                        </div>
+
+                        <div class="gap-items-list">
+                            {% for item in skill_gaps.important %}
+                            <div class="gap-item">
+                                <div class="gap-item-top">
+                                    <span class="gap-skill-name">{{ item.name }}</span>
+                                    <span class="gap-priority-pill pill-important">Medium Priority</span>
+                                </div>
+                                <p class="gap-item-desc">{{ item.reason }}</p>
+                            </div>
+                            {% else %}
+                            <div class="gap-empty-state">
+                                <span>✨</span>
+                                <p>Secondary framework requirements are satisfied or scheduled in subsequent milestones.</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Column 3: Existing Strengths -->
+                    <div class="gap-card gap-strengths">
+                        <div class="gap-card-header">
+                            <span class="gap-status-indicator">🟢</span>
+                            <div>
+                                <h3>Existing Strengths</h3>
+                                <p>Verified competencies actively working in your favor</p>
+                            </div>
+                        </div>
+
+                        <div class="gap-items-list">
+                            {% for item in skill_gaps.strengths %}
+                            <div class="gap-item">
+                                <div class="gap-item-top">
+                                    <span class="gap-skill-name">{{ item.name }}</span>
+                                    <span class="gap-priority-pill pill-strength">Validated</span>
+                                </div>
+                                <p class="gap-item-desc">{{ item.reason }}</p>
+                            </div>
+                            {% else %}
+                            <div class="gap-empty-state">
+                                <span>🌱</span>
+                                <p>No direct overlapping skills declared yet. Begin by building the critical skills above.</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
 
                 </div>
 
             </div>
 
 
-            <!-- TOP CAREER MATCHES -->
+            <!-- FEATURE 4: IMPROVED PERSONALIZED ROADMAP -->
+            <div class="roadmap-wrapper">
 
-            <h2 class="results-section-title">
-                Top Career Matches
-            </h2>
+                <div class="section-heading-group">
+                    <h2 class="results-section-title">
+                        🚀 Your Personalized Learning Roadmap
+                    </h2>
+                    <p class="section-subtitle">
+                        Step-by-step milestone plan structured by priority and time commitment to achieve full job readiness for <strong>{{ best_career.title }}</strong>.
+                    </p>
+                </div>
 
-            <div class="jobs-grid">
+                <div class="roadmap">
 
-                {% for career in careers %}
+                    {% for item in roadmap %}
 
-                <div class="job-card">
+                    <div class="roadmap-item">
 
-                    <div class="job-card-header">
+                        <div class="roadmap-number">
+                            {{ item.step_num if item.step_num is defined else loop.index }}
+                        </div>
 
-                        <div>
+                        <div class="roadmap-content-wrap">
 
-                            <p class="section-tag">
-                                {{ career.category }}
+                            <div class="roadmap-header-row">
+                                <div class="roadmap-title-group">
+                                    <h3>{{ item.step }}</h3>
+                                    {% if item.skill is defined and item.skill %}
+                                        <span class="roadmap-topic-tag">{{ item.skill }}</span>
+                                    {% endif %}
+                                </div>
+
+                                <div class="roadmap-meta-badges">
+                                    {% if item.priority is defined %}
+                                        <span class="priority-tag {% if item.priority == 'High' %}priority-high{% elif item.priority == 'Medium' %}priority-medium{% else %}priority-low{% endif %}">
+                                            Priority: {{ item.priority }}
+                                        </span>
+                                    {% endif %}
+
+                                    {% if item.duration is defined %}
+                                        <span class="duration-tag">
+                                            ⏱ {{ item.duration }}
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <p class="roadmap-item-desc">
+                                {{ item.description }}
                             </p>
 
-                            <h2>{{ career.title }}</h2>
-
-                        </div>
-
-                        <div class="job-match-badge">
-                            {{ career.match }}%
                         </div>
 
                     </div>
 
-
-                    <p class="job-description">
-                        {{ career.description }}
-                    </p>
-
-
-                    <div class="skills-section">
-
-                        <h4>✓ Matching Skills</h4>
-
-                        <div class="skill-tags">
-
-                            {% for skill in career.matching_skills %}
-
-                                <span class="skill-tag matched">
-                                    {{ skill.title() }}
-                                </span>
-
-                            {% else %}
-
-                                <span class="no-skills">
-                                    No direct skill matches yet
-                                </span>
-
-                            {% endfor %}
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="skills-section">
-
-                        <h4>⚠ Skills to Develop</h4>
-
-                        <div class="skill-tags">
-
-                            {% for skill in career.missing_skills %}
-
-                                <span class="skill-tag missing">
-                                    {{ skill.title() }}
-                                </span>
-
-                            {% endfor %}
-
-                        </div>
-
-                    </div>
+                    {% endfor %}
 
                 </div>
 
-                {% endfor %}
-
             </div>
+            <!-- AI CAREER MENTOR -->
 
+<h2 class="results-section-title">
+    🤖 AI Career Mentor
+</h2>
 
-            <!-- ROADMAP -->
+<div class="ai-mentor-card">
 
-            <h2 class="results-section-title">
-                🚀 Your Personalized Learning Roadmap
-            </h2>
+    <div class="ai-mentor-header">
 
-            <div class="roadmap">
+        <div class="ai-icon">
+            🤖
+        </div>
 
-                {% for item in roadmap %}
+        <div>
+            <p class="section-tag">
+                PERSONALIZED AI GUIDANCE
+            </p>
 
-                <div class="roadmap-item">
+            <h2>Your Career Advice</h2>
+        </div>
 
-                    <div class="roadmap-number">
-                        {{ loop.index }}
-                    </div>
+    </div>
 
-                    <div>
+    <div class="ai-advice">
 
-                        <h3>{{ item.step }}</h3>
+        {{ ai_advice }}
 
-                        <p>
-                            {{ item.description }}
-                        </p>
+    </div>
 
-                    </div>
+</div>
+<!-- ========================================================= -->
+<!-- AI CAREER MENTOR CHAT -->
+<!-- ========================================================= -->
 
-                </div>
+<div class="ai-chat-section" id="ai-mentor">
 
-                {% endfor %}
+    <h2>🤖 Ask Your AI Career Mentor</h2>
 
-            </div>
+    <p>
+        Ask questions about your career, skills, projects,
+        learning roadmap, or job preparation.
+    </p>
 
+    <div class="chat-box" id="chatBox">
+
+        <div class="ai-message">
+            👋 Hi! I'm your SkillBridge AI Career Mentor.
+            Ask me anything about your career!
+        </div>
+
+    </div>
+
+    <div class="chat-input-area">
+
+        <input
+            type="text"
+            id="userQuestion"
+            placeholder="Ask your career question..."
+        >
+
+        <button onclick="askAIMentor()">
+            Send ➤
+        </button>
+
+    </div>
+
+</div>
 
             <!-- ACTIONS -->
-
             <div class="results-actions">
 
                 <a href="/profile" class="secondary-btn">
@@ -272,11 +749,102 @@
                     Retake Assessment →
                 </a>
 
+                <a href="/jobs" class="primary-btn">
+                    💼 Find Matching Jobs
+                </a>
+
+                <a href="#ai-mentor" class="primary-btn">
+                     🤖 Ask AI Career Mentor
+                </a>
+
             </div>
 
         </div>
 
     </section>
+    <script>
+
+async function askAIMentor() {
+
+    const questionInput = document.getElementById("userQuestion");
+    const chatBox = document.getElementById("chatBox");
+
+    const question = questionInput.value.trim();
+
+    if (!question) {
+        return;
+    }
+
+    // Show user's question
+    const userMessage = document.createElement("div");
+    userMessage.className = "user-message";
+    userMessage.textContent = question;
+
+    chatBox.appendChild(userMessage);
+
+    // Clear input
+    questionInput.value = "";
+
+    // Show loading message
+    const loadingMessage = document.createElement("div");
+    loadingMessage.className = "ai-message";
+    loadingMessage.textContent = "🤖 Thinking...";
+
+    chatBox.appendChild(loadingMessage);
+
+    // Scroll down
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    try {
+
+        const response = await fetch("/ai-chat", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                question: question
+            })
+
+        });
+
+        const data = await response.json();
+
+        // Replace thinking message
+        loadingMessage.textContent = "🤖 " + data.answer;
+
+    }
+
+    catch (error) {
+
+        loadingMessage.textContent =
+            "❌ Unable to connect to the AI Career Mentor.";
+
+        console.error(error);
+
+    }
+
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+
+// Allow Enter key to send message
+
+document.getElementById("userQuestion")
+    .addEventListener("keypress", function(event) {
+
+        if (event.key === "Enter") {
+
+            askAIMentor();
+
+        }
+
+    });
+
+</script>
 
 </body>
 

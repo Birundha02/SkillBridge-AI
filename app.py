@@ -1,4 +1,15 @@
-from flask import Flask, render_template, request, redirect, session
+import os
+import json
+from dotenv import load_dotenv
+from openai import OpenAI
+from flask import Flask, render_template, request, redirect, session, jsonify
+from jobs.jobs import find_matching_jobs
+
+# Load environment variables securely from .env
+load_dotenv()
+client = OpenAI(
+    api_key=os.getenv("OPENAI_API_KEY")
+)
 
 app = Flask(__name__)
 app.secret_key = "skillbridge_hackathon_2026"
@@ -55,79 +66,470 @@ CAREERS = [
 
 
 # ==================================================
-# HELPER FUNCTION: CREATE LEARNING ROADMAP
+# SKILL INTELLIGENCE KNOWLEDGE BASE
 # ==================================================
 
-def create_roadmap(missing_skills, assessment_score):
+SKILL_CONTEXT = {
+    "python": "Core language powering modern backend services, automation scripts, and data engineering pipelines.",
+    "java": "Enterprise-grade object-oriented language essential for large-scale backend systems and high-throughput microservices.",
+    "sql": "Foundational query language for schema design, data manipulation, relational database management, and analytics.",
+    "flask": "Lightweight Python web framework ideal for building fast RESTful APIs, microservices, and backend routing.",
+    "django": "Full-featured Python web framework engineered for rapid, secure development of database-driven web platforms.",
+    "git": "Industry-standard version control system crucial for team collaboration, code branching, and CI/CD pipelines.",
+    "html": "Standard markup language providing structural semantics and accessibility across all web applications.",
+    "css": "Essential presentation technology for responsive layouts, design systems, modern themes, and animations.",
+    "javascript": "Universal client-side language enabling rich asynchronous interactions, DOM control, and modern dynamic web apps.",
+    "react": "Premier component-based JavaScript library for building responsive, stateful single-page frontend applications.",
+    "excel": "Fundamental spreadsheet and calculation tool for business modeling, data filtering, and tabular analysis.",
+    "power bi": "Enterprise business intelligence platform for data visualization, dashboard creation, and executive reporting.",
+    "statistics": "Mathematical foundation for data exploration, hypothesis testing, distributions, and predictive modeling.",
+    "machine learning": "Advanced discipline for training predictive models, pattern recognition algorithms, and AI solutions.",
+    "pandas": "Standard Python data science library for data cleaning, transformation, and structured series manipulation.",
+    "networking": "Crucial knowledge of TCP/IP, OSI models, DNS, firewalls, and secure client-server communication.",
+    "linux": "Primary server operating system for enterprise deployments, bash automation, and access permissions.",
+    "security": "Core principles of encryption, authorization mechanisms, vulnerability defense, and system hardening.",
+    "wireshark": "Essential network packet inspection tool for protocol troubleshooting, packet capture, and security audits.",
+    "aws": "Leading cloud infrastructure provider for elastic compute, S3 storage, serverless lambdas, and cloud hosting.",
+    "azure": "Enterprise cloud platform deeply integrated with Active Directory, hybrid deployments, and DevOps toolchains.",
+    "docker": "Industry containerization standard for packaging dependencies and ensuring reproducible execution anywhere."
+}
 
+
+# ==================================================
+# HELPER: DYNAMIC "WHY THIS CAREER MATCHES YOU"
+# ==================================================
+
+def generate_match_explanation(best_career, matching_skills, career_interest, assessment_score):
+    points = []
+
+    # 1. Matching Skills Rationale
+    if matching_skills:
+        skill_str = ", ".join(s.title() for s in matching_skills[:3])
+        points.append(f"Your background in {skill_str} directly satisfies core technical prerequisites for {best_career['title']}.")
+    else:
+        points.append(f"Your analytical profile and foundational skills establish a direct entry path into {best_career['title']}.")
+
+    # 2. Career Interest Alignment
+    if best_career["category"].lower() == career_interest.lower():
+        points.append(f"This role directly fulfills your primary career interest in {career_interest}.")
+    else:
+        points.append(f"This career recommendation bridges your interest in {career_interest} with high industry demand in {best_career['category']}.")
+
+    # 3. Technical Assessment Impact
+    if assessment_score >= 80:
+        points.append(f"Your strong {assessment_score}% technical assessment score indicates high engineering aptitude to master advanced workflows rapidly.")
+    elif assessment_score >= 50:
+        points.append(f"Your {assessment_score}% technical assessment score provides a solid baseline for focused hands-on upskilling.")
+    else:
+        points.append("With structured practice starting from fundamental concepts, you can rapidly build competitive job readiness.")
+
+    return " ".join(points)
+
+
+# ==================================================
+# HELPER: ADVANCED SKILL GAP ANALYSIS
+# ==================================================
+
+def analyze_skill_gaps(best_career, user_skills):
+    matching_skills = best_career.get("matching_skills", [])
+    missing_skills = best_career.get("missing_skills", [])
+
+    # Partition missing skills into Critical (learn first) and Important (develop next)
+    if len(missing_skills) <= 2:
+        critical_names = missing_skills
+        important_names = []
+    else:
+        split_idx = (len(missing_skills) + 1) // 2
+        critical_names = missing_skills[:split_idx]
+        important_names = missing_skills[split_idx:]
+
+    critical = [
+        {
+            "name": s.title(),
+            "priority": "Critical Priority",
+            "reason": SKILL_CONTEXT.get(s.lower(), f"Fundamental technical requirement for competitive {best_career['title']} roles.")
+        }
+        for s in critical_names
+    ]
+
+    important = [
+        {
+            "name": s.title(),
+            "priority": "Important",
+            "reason": SKILL_CONTEXT.get(s.lower(), f"High-impact framework and methodology that distinguishes top {best_career['title']} candidates.")
+        }
+        for s in important_names
+    ]
+
+    strengths = [
+        {
+            "name": s.title(),
+            "priority": "Demonstrated Strength",
+            "reason": SKILL_CONTEXT.get(s.lower(), "Core competency already confirmed in your profile.")
+        }
+        for s in matching_skills
+    ]
+
+    return {
+        "critical": critical,
+        "important": important,
+        "strengths": strengths
+    }
+
+
+# ==================================================
+# HELPER: REAL-TIME AI CAREER MENTOR (OPENAI INTEGRATION)
+# ==================================================
+
+def get_ai_career_mentor(name, career_interest, assessment_score, best_career, matching_skills, missing_skills, user_skills):
+    """
+    Generates personalized real-time AI career advice using OpenAI API.
+    Supports current OpenAI Responses API with Chat Completions fallback.
+    If the API is unavailable, network is down, or key is missing,
+    it falls back seamlessly to dynamic local intelligence.
+    """
+    api_key = os.getenv("OPENAI_API_KEY")
+
+    def build_fallback(note=""):
+        top_strengths = [s.title() for s in matching_skills[:3]]
+        if not top_strengths and user_skills:
+            top_strengths = [s.title() for s in user_skills[:3]]
+        if not top_strengths:
+            top_strengths = ["Technical Curiosity", "Foundational Problem Solving"]
+
+        top_missing = [s.title() for s in missing_skills[:3]]
+        if not top_missing:
+            top_missing = ["Production Architecture", "System Design"]
+
+        return {
+            "source": "SkillBridge Intelligence (Offline Fallback)",
+            "status_note": note,
+            "career_assessment": (
+                f"{name}, your technical background aligns strongly with {best_career['title']} ({best_career['match']}% match index). "
+                f"With a {assessment_score}% assessment score, you have an actionable runway to accelerate into {best_career['category']}."
+            ),
+            "key_strengths": [
+                f"Verified foundational competency in {', '.join(top_strengths)}, directly applicable to {best_career['title']}.",
+                f"Demonstrated technical aptitude with {assessment_score}% on the fundamentals assessment."
+            ],
+            "critical_skills_to_improve": [
+                f"Prioritize mastering {top_missing[0]} to unlock core job requisites.",
+                f"Build practical fluency in {top_missing[1] if len(top_missing) > 1 else 'Modern Frameworks'} for production-grade reliability."
+            ],
+            "project_recommendation": {
+                "title": f"{best_career['title']} Capstone System",
+                "description": (
+                    f"Develop an end-to-end service demonstrating full capability in {best_career['title']}. "
+                    f"Integrate {top_missing[0]}, implement robust APIs, error handling, and deploy with clean documentation."
+                ),
+                "technologies": top_strengths + top_missing[:2]
+            },
+            "conclusion": (
+                f"Dedicate 5-10 hours weekly to targeted project building. Transitioning into {best_career['title']} "
+                "is a high-probability outcome with focused, practical milestones."
+            )
+        }
+
+    if not api_key:
+        return build_fallback("OpenAI API key not configured; fallback intelligence active.")
+
+    try:
+        client = OpenAI(api_key=api_key)
+
+        system_prompt = (
+            "You are an inspiring, authoritative AI Career Mentor for SkillBridge AI. "
+            "Analyze the candidate's profile and provide structured, highly personalized career guidance. "
+            "Return ONLY a valid JSON object without markdown fences with this schema:\n"
+            "{\n"
+            '  "career_assessment": "Detailed 2-3 sentence strategic readiness diagnosis.",\n'
+            '  "key_strengths": ["Strength 1", "Strength 2"],\n'
+            '  "critical_skills_to_improve": ["Priority skill 1", "Priority skill 2"],\n'
+            '  "project_recommendation": {\n'
+            '    "title": "Specific portfolio project name",\n'
+            '    "description": "What to build and why it proves job readiness",\n'
+            '    "technologies": ["tech1", "tech2", "tech3"]\n'
+            "  },\n"
+            '  "conclusion": "1-2 sentences of actionable career advice."\n'
+            "}"
+        )
+
+        user_prompt = f"""
+Candidate Name: {name}
+Career Interest: {career_interest}
+Technical Assessment Score: {assessment_score}%
+Best Career Recommendation: {best_career['title']} ({best_career['category']})
+Match Score: {best_career['match']}%
+Matching Skills: {', '.join(matching_skills) if matching_skills else 'None declared'}
+Missing Skills to Develop: {', '.join(missing_skills) if missing_skills else 'None'}
+All Declared Skills: {', '.join(user_skills) if user_skills else 'None'}
+"""
+
+        response = client.responses.create(
+            model="gpt-4o-mini",
+            instructions=system_prompt,
+            input=user_prompt
+        )
+
+        content_str = response.output_text
+        parsed_data = json.loads(content_str)
+
+        parsed_data["source"] = "OpenAI AI Mentor"
+        parsed_data["status_note"] = "Live OpenAI guidance generated successfully."
+        return parsed_data
+
+    except Exception as e:
+        print("\nOPENAI ERROR:", str(e), "\n")
+        return build_fallback(
+            f"OpenAI API error: {str(e)[:100]}"
+        )
+
+# ==================================================
+# HELPER FUNCTION: CREATE ENHANCED LEARNING ROADMAP
+# ==================================================
+
+def create_roadmap(missing_skills, assessment_score, best_career=None):
+    career_title = best_career["title"] if best_career else "Target Career"
     roadmap = []
+    step_num = 1
 
     # Assessment-based starting point
     if assessment_score < 40:
-
         roadmap.append({
+            "step_num": step_num,
             "step": "Build Strong Fundamentals",
+            "skill": "Core Programming & Computer Science Basics",
+            "priority": "High",
+            "duration": "2–3 Weeks",
             "description": (
-                "Start by strengthening programming basics, databases, "
-                "and core software development concepts."
+                "Start by strengthening programming basics, syntax, database principles, "
+                "and core algorithmic concepts with daily hands-on coding exercises."
             )
         })
-
+        step_num += 1
     elif assessment_score < 70:
-
         roadmap.append({
-            "step": "Strengthen Your Technical Foundation",
+            "step_num": step_num,
+            "step": "Strengthen Technical Foundation",
+            "skill": "Technical Problem Solving & Architecture",
+            "priority": "Medium",
+            "duration": "1–2 Weeks",
             "description": (
-                "Improve your understanding through consistent practice "
-                "and small hands-on exercises."
+                "Reinforce your technical knowledge through structured problem solving, "
+                "debugging sessions, and practical implementations."
             )
         })
-
+        step_num += 1
     else:
-
         roadmap.append({
-            "step": "Move Towards Advanced Practice",
+            "step_num": step_num,
+            "step": "Advanced Architecture & Best Practices",
+            "skill": "Design Patterns & System Optimization",
+            "priority": "Medium",
+            "duration": "1–2 Weeks",
             "description": (
-                "Your foundation is strong. Focus on real-world projects, "
-                "advanced concepts, and job-ready skills."
+                "Your foundation is solid. Focus on code structure, clean architecture, "
+                "and performance optimization to achieve production readiness."
             )
         })
+        step_num += 1
 
-
-    # Add missing skills
-    for skill in missing_skills[:3]:
+    # Add missing skills with personalized priorities and durations
+    for idx, skill in enumerate(missing_skills[:3]):
+        skill_name = skill.title()
+        priority = "High" if idx == 0 else "Medium"
+        duration = "2–3 Weeks" if idx == 0 else "1–2 Weeks"
+        context_reason = SKILL_CONTEXT.get(skill.lower(), f"Core capability for {career_title}.")
 
         roadmap.append({
-            "step": f"Learn {skill.title()}",
+            "step_num": step_num,
+            "step": f"Master {skill_name}",
+            "skill": skill_name,
+            "priority": priority,
+            "duration": duration,
             "description": (
-                f"Learn the fundamentals of {skill.title()} and build "
-                f"a small practical project using it."
+                f"Gain practical mastery of {skill_name}. {context_reason} "
+                f"Build mini-exercises and integrate it into real-world use cases."
             )
         })
-
+        step_num += 1
 
     # Always recommend a project
     roadmap.append({
-        "step": "Build a Portfolio Project",
+        "step_num": step_num,
+        "step": "Build a Full-Stack Portfolio Project",
+        "skill": f"Applied {career_title} Capstone",
+        "priority": "High",
+        "duration": "3–4 Weeks",
         "description": (
-            "Create a real-world project that combines your skills and "
-            "showcase it on GitHub."
+            f"Develop a production-grade capstone project tailored for {career_title}. "
+            "Combine your acquired skills, document the architecture, and deploy it live with a public GitHub repo."
         )
     })
-
+    step_num += 1
 
     # Job preparation
     roadmap.append({
-        "step": "Prepare for Opportunities",
+        "step_num": step_num,
+        "step": "Career Launch & Interview Preparation",
+        "skill": "Technical Interviews & Resume Refinement",
+        "priority": "Medium",
+        "duration": "1–2 Weeks",
         "description": (
-            "Improve your resume, GitHub profile, and interview preparation "
-            "before applying for relevant opportunities."
+            f"Optimize your resume and LinkedIn for {career_title} opportunities. "
+            "Practice technical coding interviews, system design walkthroughs, and behavioral questions."
         )
     })
 
     return roadmap
+# ==================================================
+# AI CAREER MENTOR
+# ==================================================
 
+def get_ai_career_advice(
+    name,
+    skills,
+    career_interest,
+    assessment_score,
+    best_career
+):
 
+    prompt = f"""
+You are an AI Career Mentor for SkillBridge AI.
+
+Analyze this student's profile:
+
+Name: {name}
+Declared Skills: {', '.join(skills)}
+Career Interest: {career_interest}
+Technical Assessment Score: {assessment_score}%
+
+Best Career Match: {best_career['title']}
+
+Matching Skills:
+{', '.join(best_career['matching_skills'])}
+
+Skills to Develop:
+{', '.join(best_career['missing_skills'])}
+
+Give personalized career guidance with these sections:
+
+1. Career Assessment
+2. Main Strengths
+3. Skills to Learn Next
+4. Project Recommendation
+5. Motivation
+
+Keep the response concise, practical, and beginner-friendly.
+"""
+
+    try:
+        response = client.responses.create(
+            model="gpt-5.5",
+            input=prompt
+        )
+
+        return response.output_text
+
+    except Exception as e:
+
+        print("AI Error:", e)
+
+        # FALLBACK RESPONSE
+        matching_skills = ", ".join(
+            best_career.get("matching_skills", [])
+        )
+
+        missing_skills = ", ".join(
+            best_career.get("missing_skills", [])
+        )
+
+        return f"""
+1. Career Assessment
+
+{name}, your profile shows strong potential for a career as a
+{best_career['title']}. Your assessment score is {assessment_score}%,
+and your interest in {career_interest} aligns with this career path.
+
+2. Main Strengths
+
+Your current strengths include: {matching_skills if matching_skills else "your existing technical foundation"}.
+
+3. Skills to Learn Next
+
+Focus on learning: {missing_skills if missing_skills else "advanced skills related to your career path"}.
+
+4. Project Recommendation
+
+Build a practical project related to {best_career['title']} and upload
+it to GitHub. This will strengthen your portfolio.
+
+5. Motivation
+
+Keep learning consistently, {name}. You already have a foundation—focus
+on improving one skill at a time and building real projects.
+"""
+def get_ai_chat_response(question):
+
+    name = session.get("name", "User")
+    skills = session.get("skills", [])
+    career_interest = session.get("career_interest", "Technology")
+
+    prompt = f"""
+You are SkillBridge AI Career Mentor.
+
+You are helping this student:
+
+Name: {name}
+Skills: {', '.join(skills)}
+Career Interest: {career_interest}
+
+The student asks:
+
+{question}
+
+Give a helpful, practical, beginner-friendly answer.
+Keep the answer concise and related to career guidance,
+skills, learning, projects, jobs, or technology.
+"""
+
+    try:
+
+        response = client.responses.create(
+            model="gpt-5.6-luna",
+            input=prompt
+        )
+
+        return response.output_text
+
+    except Exception as e:
+
+        print("AI CHAT ERROR:", e)
+
+        return (
+            "I'm currently unable to connect to the AI service. "
+            "Please check the API credits and try again."
+        )
+    # ============================================================
+# AI CHAT API
+# ============================================================
+
+@app.route("/ai-chat", methods=["POST"])
+def ai_chat():
+
+    data = request.get_json()
+
+    question = data.get("question", "").strip()
+
+    if not question:
+        return {
+            "answer": "Please enter a question."
+        }
+
+    answer = get_ai_chat_response(question)
+
+    return {
+        "answer": answer
+    }
 # ==================================================
 # HOME
 # ==================================================
@@ -365,20 +767,62 @@ def results():
 
 
     # ----------------------------------------------
-    # CREATE PERSONALIZED ROADMAP
+    # CALCULATE METRICS FOR READINESS DASHBOARD
     # ----------------------------------------------
 
-    roadmap = create_roadmap(
+    total_required = len(best_career["matching_skills"]) + len(best_career["missing_skills"])
+    if total_required > 0:
+        skill_coverage = round((len(best_career["matching_skills"]) / total_required) * 100)
+    else:
+        skill_coverage = 0
 
-        best_career["missing_skills"],
+    # Overall Career Readiness Score (weighted: 40% best match + 35% assessment score + 25% skill coverage)
+    overall_readiness = round(
+        (0.40 * best_career["match"]) +
+        (0.35 * percentage) +
+        (0.25 * skill_coverage)
+    )
+    overall_readiness = max(0, min(100, overall_readiness))
 
+    if overall_readiness >= 75:
+        readiness_badge = "High Readiness"
+    elif overall_readiness >= 50:
+        readiness_badge = "Job Developing"
+    else:
+        readiness_badge = "Foundational"
+
+
+    # ----------------------------------------------
+    # DYNAMIC "WHY THIS CAREER MATCHES YOU" EXPLANATION
+    # ----------------------------------------------
+
+    match_explanation = generate_match_explanation(
+        best_career,
+        best_career["matching_skills"],
+        career_interest,
         percentage
-
     )
 
 
     # ----------------------------------------------
-    # CAREER READINESS
+    # ADVANCED SKILL GAP ANALYSIS
+    # ----------------------------------------------
+
+    skill_gaps = analyze_skill_gaps(best_career, user_skills)
+
+
+    # ----------------------------------------------
+    # CREATE ENHANCED PERSONALIZED ROADMAP
+    # ----------------------------------------------
+
+    roadmap = create_roadmap(
+        best_career["missing_skills"],
+        percentage,
+        best_career
+    )
+    
+    # ----------------------------------------------
+    # CAREER READINESS SUMMARY
     # ----------------------------------------------
 
     if percentage >= 80:
@@ -413,11 +857,36 @@ def results():
 
 
     # ----------------------------------------------
+    # AI CAREER MENTOR (OPENAI INTEGRATION)
+    # ----------------------------------------------
+
+    ai_mentor = get_ai_career_mentor(
+        name=user_name,
+        career_interest=career_interest,
+        assessment_score=percentage,
+        best_career=best_career,
+        matching_skills=best_career["matching_skills"],
+        missing_skills=best_career["missing_skills"],
+        user_skills=user_skills
+    )
+# ===============================================
+# GET AI CAREER ADVICE
+# ===============================================
+
+    ai_advice = get_ai_career_advice(
+        user_name,
+        user_skills,
+        career_interest,
+        percentage,
+        best_career
+    )
+
+    # ----------------------------------------------
     # RENDER RESULTS PAGE
     # ----------------------------------------------
 
     return render_template(
-
+        
         "results.html",
 
         name=user_name,
@@ -438,10 +907,75 @@ def results():
 
         readiness=readiness,
 
-        readiness_message=readiness_message
+        readiness_message=readiness_message,
+        ai_advice=ai_advice,
+
+        # Dynamic Dashboard & Analytics Data
+        skill_coverage=skill_coverage,
+
+        overall_readiness=overall_readiness,
+
+        readiness_badge=readiness_badge,
+
+        match_explanation=match_explanation,
+
+        skill_gaps=skill_gaps,
+
+        total_required_skills=total_required,
+
+        matching_count=len(best_career["matching_skills"]),
+
+        missing_count=len(best_career["missing_skills"]),
+
+        # AI Career Mentor Data
+        ai_mentor=ai_mentor
 
     )
+# ============================================================
+# JOB OPPORTUNITIES
+# ============================================================
 
+@app.route("/jobs")
+def jobs_page():
+
+    user_skills = session.get("skills", [])
+
+    matching_jobs = find_matching_jobs(
+        user_skills,
+        minimum_match=0
+    )
+
+    return render_template(
+        "jobs.html",
+        jobs=matching_jobs
+    )
+
+
+@app.route("/job/<int:job_id>")
+def job_details(job_id):
+
+    user_skills = session.get("skills", [])
+
+    matching_jobs = find_matching_jobs(
+        user_skills,
+        minimum_match=0
+    )
+
+    selected_job = next(
+        (
+            job for job in matching_jobs
+            if job["id"] == job_id
+        ),
+        None
+    )
+
+    if selected_job is None:
+        return "Job not found", 404
+
+    return render_template(
+        "job_details.html",
+        job=selected_job
+    )
 
 # ==================================================
 # RUN APPLICATION
