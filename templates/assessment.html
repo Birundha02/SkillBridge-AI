@@ -18,7 +18,9 @@
             SkillBridge <span>AI</span>
         </div>
 
-        <a href="/profile" class="back-link">← Back to Profile</a>
+        <a href="/profile" class="back-link">
+            ← Back to Profile
+        </a>
     </nav>
 
 
@@ -28,113 +30,71 @@
 
             <div class="assessment-header">
 
-                <p class="section-tag">STEP 2 OF 3</p>
+                <p class="section-tag">
+                    STEP 2 OF 3
+                </p>
 
-                <h1>Discover Your Skill Strengths.</h1>
+                <h1>
+                    Discover Your Skill Strengths.
+                </h1>
 
                 <p>
-                    Answer these questions to evaluate your current technical knowledge.
+                    Assessment for {{ career_interest }}
                 </p>
 
             </div>
 
 
-            <!-- FORM STARTS HERE -->
             <form action="/results" method="POST">
 
-                <!-- QUESTION 1 -->
+                {% for question in questions %}
+
+                {% set question_number = loop.index %}
+
                 <div class="question-card">
 
-                    <span class="question-number">01</span>
+                    <span class="question-number">
+                        {{ question_number }}
+                    </span>
 
-                    <h3>Which language is commonly used for backend development?</h3>
+                    <h3>
+                        {{ question.question }}
+                    </h3>
 
                     <div class="options">
 
-                        <label class="option">
-                            <input type="radio" name="q1" value="wrong">
-                            HTML
-                        </label>
+                        {% for option in question.options %}
 
                         <label class="option">
-                            <input type="radio" name="q1" value="correct">
-                            Python
+
+                            <input
+                                type="radio"
+                                name="q{{ question_number }}"
+                                value="{{ 'correct' if option == question.answer else 'wrong' }}"
+                                required
+                            >
+
+                            {{ option }}
+
                         </label>
 
-                        <label class="option">
-                            <input type="radio" name="q1" value="wrong">
-                            CSS
-                        </label>
+                        {% endfor %}
 
                     </div>
 
                 </div>
 
-
-                <!-- QUESTION 2 -->
-                <div class="question-card">
-
-                    <span class="question-number">02</span>
-
-                    <h3>What does SQL mainly help you work with?</h3>
-
-                    <div class="options">
-
-                        <label class="option">
-                            <input type="radio" name="q2" value="correct">
-                            Databases
-                        </label>
-
-                        <label class="option">
-                            <input type="radio" name="q2" value="wrong">
-                            Images
-                        </label>
-
-                        <label class="option">
-                            <input type="radio" name="q2" value="wrong">
-                            Hardware
-                        </label>
-
-                    </div>
-
-                </div>
+                {% endfor %}
 
 
-                <!-- QUESTION 3 -->
-                <div class="question-card">
-
-                    <span class="question-number">03</span>
-
-                    <h3>Which tool is commonly used for version control?</h3>
-
-                    <div class="options">
-
-                        <label class="option">
-                            <input type="radio" name="q3" value="correct">
-                            Git
-                        </label>
-
-                        <label class="option">
-                            <input type="radio" name="q3" value="wrong">
-                            Excel
-                        </label>
-
-                        <label class="option">
-                            <input type="radio" name="q3" value="wrong">
-                            Photoshop
-                        </label>
-
-                    </div>
-
-                </div>
-
-
-                <button type="submit" class="primary-btn assessment-btn">
+                <button
+                    type="submit"
+                    class="primary-btn assessment-btn"
+                >
                     Analyze My Skills →
                 </button>
 
             </form>
-            <!-- FORM ENDS HERE -->
 
         </div>
 

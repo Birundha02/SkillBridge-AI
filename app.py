@@ -581,12 +581,688 @@ def profile():
 # ==================================================
 # ASSESSMENT
 # ==================================================
+# ==================================================
+# CAREER-SPECIFIC ASSESSMENT QUESTIONS
+# ==================================================
+
+def get_assessment_questions(career):
+
+    questions_by_career = {
+
+        # ==================================================
+        # SOFTWARE DEVELOPMENT
+        # ==================================================
+
+        "Software Development": [
+
+            {
+                "question": "Which programming language is commonly used for backend development?",
+                "options": ["Python", "HTML", "CSS"],
+                "answer": "Python"
+            },
+            {
+                "question": "What does API stand for?",
+                "options": [
+                    "Application Programming Interface",
+                    "Advanced Program Internet",
+                    "Automatic Programming Integration"
+                ],
+                "answer": "Application Programming Interface"
+            },
+            {
+                "question": "What is SQL mainly used for?",
+                "options": [
+                    "Managing databases",
+                    "Styling websites",
+                    "Creating images"
+                ],
+                "answer": "Managing databases"
+            },
+            {
+                "question": "Which HTTP method is commonly used to retrieve data?",
+                "options": ["GET", "POST", "DELETE"],
+                "answer": "GET"
+            },
+            {
+                "question": "Which HTTP method is commonly used to send new data?",
+                "options": ["POST", "GET", "OPTIONS"],
+                "answer": "POST"
+            },
+            {
+                "question": "What does CRUD stand for?",
+                "options": [
+                    "Create, Read, Update, Delete",
+                    "Code, Run, Upload, Download",
+                    "Create, Remove, Update, Design"
+                ],
+                "answer": "Create, Read, Update, Delete"
+            },
+            {
+                "question": "Which tool is commonly used for version control?",
+                "options": ["Git", "Excel", "Photoshop"],
+                "answer": "Git"
+            },
+            {
+                "question": "What is JSON commonly used for?",
+                "options": [
+                    "Exchanging structured data",
+                    "Styling web pages",
+                    "Creating images"
+                ],
+                "answer": "Exchanging structured data"
+            },
+            {
+                "question": "What is authentication used for?",
+                "options": [
+                    "Verifying user identity",
+                    "Changing website colors",
+                    "Deleting databases"
+                ],
+                "answer": "Verifying user identity"
+            },
+            {
+                "question": "Which framework is commonly used for Python web development?",
+                "options": ["Flask", "Pandas", "NumPy"],
+                "answer": "Flask"
+            },
+            {
+                "question": "What is a database?",
+                "options": [
+                    "An organized collection of data",
+                    "A programming language",
+                    "A web browser"
+                ],
+                "answer": "An organized collection of data"
+            },
+            {
+                "question": "What is debugging?",
+                "options": [
+                    "Finding and fixing errors in code",
+                    "Deleting all code",
+                    "Designing a logo"
+                ],
+                "answer": "Finding and fixing errors in code"
+            },
+            {
+                "question": "What does HTTP stand for?",
+                "options": [
+                    "HyperText Transfer Protocol",
+                    "High Text Transfer Program",
+                    "Hyper Tool Text Process"
+                ],
+                "answer": "HyperText Transfer Protocol"
+            },
+            {
+                "question": "What is server-side code responsible for?",
+                "options": [
+                    "Application logic and data processing",
+                    "Only webpage styling",
+                    "Creating computer hardware"
+                ],
+                "answer": "Application logic and data processing"
+            },
+            {
+                "question": "Why is error handling important?",
+                "options": [
+                    "To handle unexpected problems safely",
+                    "To increase screen brightness",
+                    "To change HTML colors"
+                ],
+                "answer": "To handle unexpected problems safely"
+            }
+
+        ],
+
+
+        # ==================================================
+        # WEB DEVELOPMENT
+        # ==================================================
+
+        "Web Development": [
+
+            {
+                "question": "Which language is used to structure web pages?",
+                "options": ["HTML", "Python", "SQL"],
+                "answer": "HTML"
+            },
+            {
+                "question": "What is CSS mainly used for?",
+                "options": [
+                    "Styling web pages",
+                    "Managing databases",
+                    "Backend programming"
+                ],
+                "answer": "Styling web pages"
+            },
+            {
+                "question": "Which language adds interactivity to websites?",
+                "options": ["JavaScript", "HTML", "SQL"],
+                "answer": "JavaScript"
+            },
+            {
+                "question": "What does HTML stand for?",
+                "options": [
+                    "HyperText Markup Language",
+                    "HighText Machine Language",
+                    "Hyper Tool Markup Logic"
+                ],
+                "answer": "HyperText Markup Language"
+            },
+            {
+                "question": "What is responsive web design?",
+                "options": [
+                    "Design that adapts to different screen sizes",
+                    "A database system",
+                    "A backend framework"
+                ],
+                "answer": "Design that adapts to different screen sizes"
+            },
+            {
+                "question": "Which HTML tag is used to create a hyperlink?",
+                "options": ["<a>", "<img>", "<div>"],
+                "answer": "<a>"
+            },
+            {
+                "question": "Which HTML tag is used to display an image?",
+                "options": ["<img>", "<a>", "<p>"],
+                "answer": "<img>"
+            },
+            {
+                "question": "Which CSS property changes text color?",
+                "options": ["color", "margin", "padding"],
+                "answer": "color"
+            },
+            {
+                "question": "What is JavaScript mainly used for?",
+                "options": [
+                    "Adding dynamic behavior",
+                    "Managing only databases",
+                    "Creating hardware"
+                ],
+                "answer": "Adding dynamic behavior"
+            },
+            {
+                "question": "Which library is popular for frontend development?",
+                "options": ["React", "Flask", "Django"],
+                "answer": "React"
+            },
+            {
+                "question": "What does UI stand for?",
+                "options": [
+                    "User Interface",
+                    "Universal Internet",
+                    "User Integration"
+                ],
+                "answer": "User Interface"
+            },
+            {
+                "question": "What does UX focus on?",
+                "options": [
+                    "User experience",
+                    "Database management",
+                    "Server configuration"
+                ],
+                "answer": "User experience"
+            },
+            {
+                "question": "Why are media queries used?",
+                "options": [
+                    "Creating responsive designs",
+                    "Connecting databases",
+                    "Creating APIs"
+                ],
+                "answer": "Creating responsive designs"
+            },
+            {
+                "question": "What is a navigation bar used for?",
+                "options": [
+                    "Helping users navigate a website",
+                    "Storing database records",
+                    "Running Python code"
+                ],
+                "answer": "Helping users navigate a website"
+            },
+            {
+                "question": "What is the purpose of CSS classes?",
+                "options": [
+                    "Applying styles to multiple elements",
+                    "Creating databases",
+                    "Sending emails"
+                ],
+                "answer": "Applying styles to multiple elements"
+            }
+
+        ],
+
+
+        # ==================================================
+        # DATA SCIENCE
+        # ==================================================
+
+        "Data Science": [
+
+            {
+                "question": "Which programming language is widely used in Data Science?",
+                "options": ["Python", "HTML", "CSS"],
+                "answer": "Python"
+            },
+            {
+                "question": "Which Python library is commonly used for data analysis?",
+                "options": ["Pandas", "Flask", "Bootstrap"],
+                "answer": "Pandas"
+            },
+            {
+                "question": "Which library is commonly used for numerical computing?",
+                "options": ["NumPy", "React", "Django"],
+                "answer": "NumPy"
+            },
+            {
+                "question": "What is SQL mainly used for?",
+                "options": [
+                    "Working with databases",
+                    "Styling websites",
+                    "Creating animations"
+                ],
+                "answer": "Working with databases"
+            },
+            {
+                "question": "What is a dataset?",
+                "options": [
+                    "A collection of related data",
+                    "A programming language",
+                    "A web browser"
+                ],
+                "answer": "A collection of related data"
+            },
+            {
+                "question": "What is data visualization used for?",
+                "options": [
+                    "Understanding and presenting data",
+                    "Creating backend servers",
+                    "Designing computer hardware"
+                ],
+                "answer": "Understanding and presenting data"
+            },
+            {
+                "question": "Which chart is useful for comparing categories?",
+                "options": ["Bar chart", "Flowchart", "Text editor"],
+                "answer": "Bar chart"
+            },
+            {
+                "question": "Which chart is useful for showing trends over time?",
+                "options": ["Line chart", "Pie chart", "Table"],
+                "answer": "Line chart"
+            },
+            {
+                "question": "What is data cleaning?",
+                "options": [
+                    "Correcting or removing inaccurate data",
+                    "Deleting all data",
+                    "Creating a website"
+                ],
+                "answer": "Correcting or removing inaccurate data"
+            },
+            {
+                "question": "What does CSV stand for?",
+                "options": [
+                    "Comma-Separated Values",
+                    "Computer System Variable",
+                    "Code Style Version"
+                ],
+                "answer": "Comma-Separated Values"
+            },
+            {
+                "question": "What is a missing value?",
+                "options": [
+                    "Data that is not available",
+                    "A duplicate chart",
+                    "A programming language"
+                ],
+                "answer": "Data that is not available"
+            },
+            {
+                "question": "What is filtering data used for?",
+                "options": [
+                    "Selecting relevant data",
+                    "Deleting databases",
+                    "Changing programming languages"
+                ],
+                "answer": "Selecting relevant data"
+            },
+            {
+                "question": "What is the purpose of data analysis?",
+                "options": [
+                    "Finding useful insights",
+                    "Building computer hardware",
+                    "Creating only websites"
+                ],
+                "answer": "Finding useful insights"
+            },
+            {
+                "question": "Which skill is important for Data Science?",
+                "options": ["Statistics", "Only HTML", "Only CSS"],
+                "answer": "Statistics"
+            },
+            {
+                "question": "What should be done before analyzing data?",
+                "options": [
+                    "Understand and prepare the data",
+                    "Immediately delete the data",
+                    "Create a website first"
+                ],
+                "answer": "Understand and prepare the data"
+            }
+
+        ],
+
+
+        # ==================================================
+        # CYBERSECURITY
+        # ==================================================
+
+        "Cybersecurity": [
+
+            {
+                "question": "What is cybersecurity mainly concerned with?",
+                "options": [
+                    "Protecting systems and data",
+                    "Designing websites",
+                    "Creating spreadsheets"
+                ],
+                "answer": "Protecting systems and data"
+            },
+            {
+                "question": "What is phishing?",
+                "options": [
+                    "A fraudulent attempt to steal information",
+                    "A programming language",
+                    "A database"
+                ],
+                "answer": "A fraudulent attempt to steal information"
+            },
+            {
+                "question": "What is malware?",
+                "options": [
+                    "Malicious software",
+                    "A web browser",
+                    "A programming framework"
+                ],
+                "answer": "Malicious software"
+            },
+            {
+                "question": "What does a firewall help do?",
+                "options": [
+                    "Monitor and control network traffic",
+                    "Create websites",
+                    "Write documents"
+                ],
+                "answer": "Monitor and control network traffic"
+            },
+            {
+                "question": "Why are strong passwords important?",
+                "options": [
+                    "They improve account security",
+                    "They increase internet speed",
+                    "They improve screen quality"
+                ],
+                "answer": "They improve account security"
+            },
+            {
+                "question": "What is two-factor authentication?",
+                "options": [
+                    "An additional layer of account security",
+                    "A programming language",
+                    "A database system"
+                ],
+                "answer": "An additional layer of account security"
+            },
+            {
+                "question": "Which operating system is commonly used in cybersecurity?",
+                "options": ["Linux", "HTML", "CSS"],
+                "answer": "Linux"
+            },
+            {
+                "question": "What is network security?",
+                "options": [
+                    "Protecting networks from threats",
+                    "Designing websites",
+                    "Creating databases"
+                ],
+                "answer": "Protecting networks from threats"
+            },
+            {
+                "question": "What is encryption used for?",
+                "options": [
+                    "Protecting data by converting it into a secure form",
+                    "Deleting data",
+                    "Styling a website"
+                ],
+                "answer": "Protecting data by converting it into a secure form"
+            },
+            {
+                "question": "What is Wireshark mainly used for?",
+                "options": [
+                    "Analyzing network traffic",
+                    "Creating websites",
+                    "Managing spreadsheets"
+                ],
+                "answer": "Analyzing network traffic"
+            },
+            {
+                "question": "What is a vulnerability?",
+                "options": [
+                    "A weakness that can be exploited",
+                    "A secure password",
+                    "A programming language"
+                ],
+                "answer": "A weakness that can be exploited"
+            },
+            {
+                "question": "What is a cyber attack?",
+                "options": [
+                    "An attempt to compromise systems or data",
+                    "A software update",
+                    "A web design technique"
+                ],
+                "answer": "An attempt to compromise systems or data"
+            },
+            {
+                "question": "Why should software be updated regularly?",
+                "options": [
+                    "To fix security vulnerabilities",
+                    "To change the keyboard",
+                    "To reduce monitor size"
+                ],
+                "answer": "To fix security vulnerabilities"
+            },
+            {
+                "question": "What is social engineering?",
+                "options": [
+                    "Manipulating people to gain information",
+                    "Building social media websites",
+                    "Writing database queries"
+                ],
+                "answer": "Manipulating people to gain information"
+            },
+            {
+                "question": "What is the goal of cybersecurity?",
+                "options": [
+                    "Protect confidentiality, integrity, and availability",
+                    "Only design websites",
+                    "Only create applications"
+                ],
+                "answer": "Protect confidentiality, integrity, and availability"
+            }
+
+        ],
+
+
+        # ==================================================
+        # CLOUD COMPUTING
+        # ==================================================
+
+        "Cloud Computing": [
+
+            {
+                "question": "What is cloud computing?",
+                "options": [
+                    "Delivering computing services over the internet",
+                    "Building only physical computers",
+                    "Creating websites without servers"
+                ],
+                "answer": "Delivering computing services over the internet"
+            },
+            {
+                "question": "Which company provides AWS?",
+                "options": ["Amazon", "Google", "Netflix"],
+                "answer": "Amazon"
+            },
+            {
+                "question": "What is Microsoft Azure?",
+                "options": [
+                    "A cloud computing platform",
+                    "A programming language",
+                    "A database table"
+                ],
+                "answer": "A cloud computing platform"
+            },
+            {
+                "question": "What is Docker mainly used for?",
+                "options": [
+                    "Containerizing applications",
+                    "Creating spreadsheets",
+                    "Designing logos"
+                ],
+                "answer": "Containerizing applications"
+            },
+            {
+                "question": "Which operating system is commonly used in cloud environments?",
+                "options": ["Linux", "HTML", "CSS"],
+                "answer": "Linux"
+            },
+            {
+                "question": "What is cloud storage?",
+                "options": [
+                    "Storing data on remote servers",
+                    "Saving data only on paper",
+                    "Deleting all files"
+                ],
+                "answer": "Storing data on remote servers"
+            },
+            {
+                "question": "What does scalability mean in cloud computing?",
+                "options": [
+                    "Increasing or decreasing resources based on demand",
+                    "Changing website colors",
+                    "Deleting applications"
+                ],
+                "answer": "Increasing or decreasing resources based on demand"
+            },
+            {
+                "question": "What is virtualization?",
+                "options": [
+                    "Creating virtual versions of computing resources",
+                    "Creating only physical hardware",
+                    "Writing HTML code"
+                ],
+                "answer": "Creating virtual versions of computing resources"
+            },
+            {
+                "question": "What is a cloud server?",
+                "options": [
+                    "A server hosted in a cloud environment",
+                    "A web browser",
+                    "A programming language"
+                ],
+                "answer": "A server hosted in a cloud environment"
+            },
+            {
+                "question": "What is networking important for in cloud computing?",
+                "options": [
+                    "Connecting cloud resources and services",
+                    "Changing application colors",
+                    "Writing documents"
+                ],
+                "answer": "Connecting cloud resources and services"
+            },
+            {
+                "question": "What is Infrastructure as a Service (IaaS)?",
+                "options": [
+                    "Cloud-based computing infrastructure",
+                    "A website design method",
+                    "A programming language"
+                ],
+                "answer": "Cloud-based computing infrastructure"
+            },
+            {
+                "question": "What is Platform as a Service (PaaS)?",
+                "options": [
+                    "A platform for developing and deploying applications",
+                    "A physical computer",
+                    "A text editor"
+                ],
+                "answer": "A platform for developing and deploying applications"
+            },
+            {
+                "question": "What is Software as a Service (SaaS)?",
+                "options": [
+                    "Software delivered over the internet",
+                    "A type of computer hardware",
+                    "A programming language"
+                ],
+                "answer": "Software delivered over the internet"
+            },
+            {
+                "question": "Why is cloud security important?",
+                "options": [
+                    "To protect cloud data and resources",
+                    "To change screen colors",
+                    "To create HTML pages"
+                ],
+                "answer": "To protect cloud data and resources"
+            },
+            {
+                "question": "What is one advantage of cloud computing?",
+                "options": [
+                    "Flexible access to computing resources",
+                    "It eliminates the need for all programming",
+                    "It removes the need for internet connections"
+                ],
+                "answer": "Flexible access to computing resources"
+            }
+
+        ]
+
+    }
+
+
+    return questions_by_career.get(
+        career,
+        questions_by_career["Software Development"]
+    )
+
+
+# ==================================================
+# ASSESSMENT PAGE
+# ==================================================
 
 @app.route("/assessment")
 def assessment():
 
-    return render_template("assessment.html")
+    career_interest = session.get(
+        "career_interest",
+        "Backend Developer"
+    )
 
+    questions = get_assessment_questions(
+        career_interest
+    )
+
+    return render_template(
+        "assessment.html",
+        questions=questions,
+        career_interest=career_interest
+    )
 
 # ==================================================
 # RESULTS + CAREER MATCHING ENGINE
