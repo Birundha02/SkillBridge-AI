@@ -4,16 +4,22 @@ from dotenv import load_dotenv
 from openai import OpenAI
 from flask import Flask, render_template, request, redirect, session, jsonify
 from jobs.jobs import find_matching_jobs
+from resume.resume_app import resume_bp
 
 # Load environment variables securely from .env
 load_dotenv()
+
 client = OpenAI(
     api_key=os.getenv("OPENAI_API_KEY")
 )
 
 app = Flask(__name__)
 app.secret_key = "skillbridge_hackathon_2026"
+app.register_blueprint(resume_bp)
 
+app = Flask(__name__)
+app.secret_key = "skillbridge_hackathon_2026"
+app.register_blueprint(resume_bp)
 
 # ==================================================
 # CAREER DATABASE

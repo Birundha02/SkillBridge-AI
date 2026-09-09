@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Resume Analyzer | SkillSync AI</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fb;
+            color: #1f2937;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 40px auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #6b7280;
+            font-size: 16px;
+        }
+
+        .upload-card {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+
+        .upload-card h2 {
+            margin-bottom: 10px;
+        }
+
+        .upload-card p {
+            color: #6b7280;
+            margin-bottom: 20px;
+        }
+
+        .file-input {
+            width: 100%;
+            padding: 14px;
+            border: 2px dashed #cbd5e1;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            background: #f8fafc;
+        }
+
+        .analyze-btn {
+            border: none;
+            padding: 13px 25px;
+            border-radius: 8px;
+            background: #111827;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .analyze-btn:hover {
+            opacity: 0.9;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .results {
+            display: grid;
+            gap: 20px;
+        }
+
+        .result-card {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .result-card h2 {
+            margin-bottom: 15px;
+        }
+
+        .result-card h3 {
+            margin-bottom: 12px;
+        }
+
+        .skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .skill {
+            background: #e0e7ff;
+            color: #3730a3;
+            padding: 8px 13px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .education-list {
+            padding-left: 20px;
+        }
+
+        .education-list li {
+            margin-bottom: 8px;
+        }
+
+        .resume-text {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 10px;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+            color: #4b5563;
+            line-height: 1.6;
+        }
+
+        .empty-message {
+            color: #6b7280;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1>📄 Resume Analyzer</h1>
+        <p>Upload your resume and let SkillSync AI identify your skills and information.</p>
+    </div>
+
+
+    <div class="upload-card">
+
+        <h2>Upload Your Resume</h2>
+
+        <p>
+            Supported formats: PDF and DOCX
+        </p>
+
+        {% if error %}
+            <div class="error">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <form action="/resume/" method="POST" enctype="multipart/form-data">
+
+            <input
+                type="file"
+                name="resume"
+                class="file-input"
+                accept=".pdf,.docx"
+                required
+            >
+
+            <button type="submit" class="analyze-btn">
+                Analyze Resume
+            </button>
+
+        </form>
+
+    </div>
+
+
+    {% if analyzed %}
+
+    <div class="results">
+
+        <div class="result-card">
+
+            <h2>👤 Basic Information</h2>
+
+            <h3>Name</h3>
+
+            <p>
+                {% if name %}
+                    {{ name }}
+                {% else %}
+                    <span class="empty-message">
+                        Name could not be detected.
+                    </span>
+                {% endif %}
+            </p>
+
+        </div>
+
+
+        <div class="result-card">
+
+            <h2>🎓 Education</h2>
+
+            {% if education %}
+
+                <ul class="education-list">
+
+                    {% for item in education %}
+                        <li>{{ item }}</li>
+                    {% endfor %}
+
+                </ul>
+
+            {% else %}
+
+                <p class="empty-message">
+                    No education information detected.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+
+        <div class="result-card">
+
+            <h2>💻 Skills Detected</h2>
+
+            {% if skills %}
+
+                <div class="skills">
+
+                    {% for skill in skills %}
+
+                        <span class="skill">
+                            {{ skill }}
+                        </span>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <p class="empty-message">
+                    No matching skills were detected.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+
+        <div class="result-card">
+
+            <h2>📝 Extracted Resume Text</h2>
+
+            <div class="resume-text">
+                {{ resume_text }}
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+</body>
+</html>
