@@ -49,39 +49,360 @@
 
 
             <!-- FEATURE 1: SKILL READINESS DASHBOARD -->
-            <section class="dashboard-section">
+<section class="dashboard-section">
 
-                <div class="readiness-dashboard-grid">
+    <!-- TOP METRICS -->
+    <div class="readiness-dashboard-grid">
 
-                    <!-- Metric 1: Overall Career Readiness -->
-                    <div class="metric-card metric-featured">
-                        <div class="metric-card-top">
-                            <span class="metric-title">Overall Career Readiness</span>
-                            <span class="metric-tag tag-readiness">{{ readiness_badge }}</span>
-                        </div>
-                        <div class="metric-value-wrap">
-                            <span class="metric-number">{{ overall_readiness }}%</span>
-                        </div>
-                        <div class="metric-bar-track">
-                            <div class="metric-bar-fill fill-dark" style="width: {{ overall_readiness }}%;"></div>
-                        </div>
-                        <p class="metric-hint">Weighted composite of skills, match fit, and technical assessment</p>
+        <!-- Overall Career Readiness -->
+        <div class="metric-card metric-featured">
+
+            <div class="metric-card-top">
+                <span class="metric-title">
+                    Overall Career Readiness
+                </span>
+
+                <span class="metric-tag tag-readiness">
+                    {{ readiness_badge }}
+                </span>
+            </div>
+
+            <div class="metric-value-wrap">
+                <span class="metric-number">
+                    {{ overall_readiness }}%
+                </span>
+            </div>
+
+            <div class="metric-bar-track">
+                <div
+                    class="metric-bar-fill fill-dark"
+                    style="width: {{ overall_readiness }}%;">
+                </div>
+            </div>
+
+            <p class="metric-hint">
+                Weighted composite of skills, match fit, and technical assessment
+            </p>
+
+        </div>
+
+
+        <!-- Technical Assessment -->
+        <div class="metric-card">
+
+            <div class="metric-card-top">
+
+                <span class="metric-title">
+                    Technical Assessment
+                </span>
+
+                <span class="metric-tag">
+                    {{ score }}/15 Correct
+                </span>
+
+            </div>
+
+            <div class="metric-value-wrap">
+                <span class="metric-number">
+                    {{ percentage }}%
+                </span>
+            </div>
+
+            <div class="metric-bar-track">
+                <div
+                    class="metric-bar-fill"
+                    style="width: {{ percentage }}%;">
+                </div>
+            </div>
+
+            <p class="metric-hint">
+                Career-specific technical assessment performance
+            </p>
+
+        </div>
+
+
+        <!-- Declared Skills -->
+        <div class="metric-card user-skills-card">
+
+            <div class="metric-card-top">
+
+                <span class="metric-title">
+                    Your Declared Skills
+                </span>
+
+                <span class="metric-tag">
+                    {{ skills|length }} Skills
+                </span>
+
+            </div>
+
+            <div class="skill-tags top-skill-tags">
+
+                {% for skill in skills %}
+
+                    <span class="skill-tag user-skill">
+                        {{ skill.title() }}
+                    </span>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- SKILL GAP ANALYSIS -->
+    <section class="skill-gap-section">
+
+        <div class="section-heading-group">
+
+            <h2 class="results-section-title">
+                📊 Skill Gap Analysis
+            </h2>
+
+            <p class="section-subtitle">
+                Understand the skills you already have and the skills you need to develop for your recommended career.
+            </p>
+
+        </div>
+
+
+        <div class="skill-gap-card">
+
+            <div class="skill-gap-header">
+
+                <div>
+
+                    <p class="section-tag">
+                        YOUR CAREER READINESS
+                    </p>
+
+                    <h2>
+                        {{ best_career.title }}
+                    </h2>
+
+                </div>
+
+                <div class="skill-percentage">
+                    {{ skill_coverage }}%
+                </div>
+
+            </div>
+
+
+            <div class="progress-container">
+
+                <div
+                    class="progress-bar"
+                    style="width: {{ skill_coverage }}%;">
+                </div>
+
+            </div>
+
+
+            <div class="skill-stats">
+
+                <div class="stat-box">
+                    <span class="stat-number">
+                        {{ matching_count }}
+                    </span>
+
+                    <span class="stat-label">
+                        Matching Skills
+                    </span>
+                </div>
+
+
+                <div class="stat-box">
+                    <span class="stat-number">
+                        {{ missing_count }}
+                    </span>
+
+                    <span class="stat-label">
+                        Skills to Develop
+                    </span>
+                </div>
+
+
+                <div class="stat-box">
+                    <span class="stat-number">
+                        {{ total_required_skills }}
+                    </span>
+
+                    <span class="stat-label">
+                        Required Skills
+                    </span>
+                </div>
+
+            </div>
+
+
+            <div class="gap-section">
+
+                <h3>
+                    🎯 Priority Skills to Learn
+                </h3>
+
+                <div class="skill-tags">
+
+                    {% for skill in skill_gaps %}
+
+                        <span class="skill-tag missing">
+                            {{ skill.title() }}
+                        </span>
+
+                    {% else %}
+
+                        <p class="no-skills">
+                            🎉 Great! You currently have all the required skills.
+                        </p>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- BEST CAREER MATCH -->
+    <section class="best-career-section">
+
+        <div class="section-heading-group">
+
+            <h2 class="results-section-title">
+                🏆 Best Career Match
+            </h2>
+
+            <p class="section-subtitle">
+                Your strongest career recommendation based on your skills, interests, and assessment performance.
+            </p>
+
+        </div>
+
+
+        <div class="best-career-grid">
+
+            <!-- Best Career Match -->
+            <div class="metric-card">
+
+                <div class="metric-card-top">
+
+                    <span class="metric-title">
+                        Best Career Match
+                    </span>
+
+                    <span class="metric-tag tag-best">
+                        {{ best_career.title }}
+                    </span>
+
+                </div>
+
+
+                <div class="metric-value-wrap">
+
+                    <span class="metric-number">
+                        {{ best_career.match }}%
+                    </span>
+
+                </div>
+
+
+                <div class="metric-bar-track">
+
+                    <div
+                        class="metric-bar-fill"
+                        style="width: {{ best_career.match }}%;">
                     </div>
 
-                    <!-- Metric 2: Technical Assessment Score -->
-                    <div class="metric-card">
-                        <div class="metric-card-top">
-                            <span class="metric-title">Technical Assessment</span>
-                            <span class="metric-tag">{{ score }}/3 Correct</span>
-                        </div>
-                        <div class="metric-value-wrap">
-                            <span class="metric-number">{{ percentage }}%</span>
-                        </div>
-                        <div class="metric-bar-track">
-                            <div class="metric-bar-fill" style="width: {{ percentage }}%;"></div>
-                        </div>
-                        <p class="metric-hint">Core technical fundamentals & problem-solving evaluation</p>
+                </div>
+
+
+                <p class="metric-hint">
+                    Algorithmic role fit based on your declared profile & goals
+                </p>
+
+            </div>
+
+
+            <!-- Skill Coverage -->
+            <div class="metric-card">
+
+                <div class="metric-card-top">
+
+                    <span class="metric-title">
+                        Skill Coverage
+                    </span>
+
+                    <span class="metric-tag">
+                        {{ matching_count }}/{{ total_required_skills }} Skills
+                    </span>
+
+                </div>
+
+
+                <div class="metric-value-wrap">
+
+                    <span class="metric-number">
+                        {{ skill_coverage }}%
+                    </span>
+
+                </div>
+
+
+                <div class="metric-bar-track">
+
+                    <div
+                        class="metric-bar-fill"
+                        style="width: {{ skill_coverage }}%;">
                     </div>
+
+                </div>
+
+
+                <p class="metric-hint">
+                    Prerequisite skill overlap against {{ best_career.title }} role
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- READINESS SUMMARY -->
+    <div class="readiness-summary-card">
+
+        <div class="readiness-summary-left">
+
+            <span class="summary-badge-icon">
+                📊
+            </span>
+
+            <div>
+
+                <h3>
+                    {{ readiness }} Career Readiness Assessment
+                </h3>
+
+                <p>
+                    {{ readiness_message }}
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
                     <!-- PROFILE SKILLS -->
 
 <div class="user-skills-card">
@@ -103,122 +424,209 @@
 </div>
 
 
-<!-- PASTE SKILL GAP ANALYSIS HERE -->
-
 <!-- SKILL GAP ANALYSIS -->
+<section class="skill-gap-section">
 
-<h2 class="results-section-title">
-    📊 Skill Gap Analysis
-</h2>
+    <div class="section-heading-group">
 
-<div class="skill-gap-card">
+        <h2 class="results-section-title">
+            📊 Skill Gap Analysis
+        </h2>
 
-    <div class="skill-gap-header">
-
-        <div>
-            <p class="section-tag">
-                YOUR CAREER READINESS
-            </p>
-
-            <h2>{{ best_career.title }}</h2>
-        </div>
-
-        <div class="skill-percentage">
-            {{ skill_coverage }}%
-        </div>
+        <p class="section-subtitle">
+            Understand the skills you already have and the skills you need to develop for your recommended career.
+        </p>
 
     </div>
 
-    <div class="progress-container">
-        <div
-            class="progress-bar"
-            style="width: {{ skill_coverage }}%;"
-        ></div>
-    </div>
+    <div class="skill-gap-card">
 
-    <div class="skill-stats">
+        <div class="skill-gap-header">
 
-        <div class="stat-box">
-            <span class="stat-number">{{ matching_count }}</span>
-            <span class="stat-label">Matching Skills</span>
-        </div>
-
-        <div class="stat-box">
-            <span class="stat-number">{{ missing_count }}</span>
-            <span class="stat-label">Skills to Develop</span>
-        </div>
-
-        <div class="stat-box">
-            <span class="stat-number">{{ total_required_skills }}</span>
-            <span class="stat-label">Required Skills</span>
-        </div>
-
-    </div>
-
-    <div class="gap-section">
-
-        <h3>🎯 Priority Skills to Learn</h3>
-
-        <div class="skill-tags">
-
-            {% for skill in skill_gaps %}
-
-                <span class="skill-tag missing">
-                    {{ skill.title() }}
-                </span>
-
-            {% else %}
-
-                <p class="no-skills">
-                    🎉 Great! You currently have all the required skills.
+            <div>
+                <p class="section-tag">
+                    YOUR CAREER READINESS
                 </p>
 
-            {% endfor %}
+                <h2>{{ best_career.title }}</h2>
+            </div>
+
+            <div class="skill-percentage">
+                {{ skill_coverage }}%
+            </div>
+
+        </div>
+
+        <div class="progress-container">
+
+            <div
+                class="progress-bar"
+                style="width: {{ skill_coverage }}%;">
+            </div>
+
+        </div>
+
+        <div class="skill-stats">
+
+            <div class="stat-box">
+                <span class="stat-number">
+                    {{ matching_count }}
+                </span>
+
+                <span class="stat-label">
+                    Matching Skills
+                </span>
+            </div>
+
+            <div class="stat-box">
+                <span class="stat-number">
+                    {{ missing_count }}
+                </span>
+
+                <span class="stat-label">
+                    Skills to Develop
+                </span>
+            </div>
+
+            <div class="stat-box">
+                <span class="stat-number">
+                    {{ total_required_skills }}
+                </span>
+
+                <span class="stat-label">
+                    Required Skills
+                </span>
+            </div>
+
+        </div>
+
+        <div class="gap-section">
+
+            <h3>🎯 Priority Skills to Learn</h3>
+
+            <div class="skill-tags">
+
+                {% for skill in skill_gaps %}
+
+                    <span class="skill-tag missing">
+                        {{ skill.title() }}
+                    </span>
+
+                {% else %}
+
+                    <p class="no-skills">
+                        🎉 Great! You currently have all the required skills.
+                    </p>
+
+                {% endfor %}
+
+            </div>
 
         </div>
 
     </div>
 
-</div>
-
+</section>
 
 <!-- BEST CAREER -->
 
-<h2 class="results-section-title">
-    🏆 Best Career Match
-</h2>
+<!-- BEST CAREER MATCH -->
+<section class="best-career-section">
 
-                    <!-- Metric 3: Best Career Match -->
-                    <div class="metric-card">
-                        <div class="metric-card-top">
-                            <span class="metric-title">Best Career Match</span>
-                            <span class="metric-tag tag-best">{{ best_career.title }}</span>
-                        </div>
-                        <div class="metric-value-wrap">
-                            <span class="metric-number">{{ best_career.match }}%</span>
-                        </div>
-                        <div class="metric-bar-track">
-                            <div class="metric-bar-fill" style="width: {{ best_career.match }}%;"></div>
-                        </div>
-                        <p class="metric-hint">Algorithmic role fit based on your declared profile & goals</p>
-                    </div>
+    <div class="section-heading-group">
 
-                    <!-- Metric 4: Skill Coverage -->
-                    <div class="metric-card">
-                        <div class="metric-card-top">
-                            <span class="metric-title">Skill Coverage</span>
-                            <span class="metric-tag">{{ matching_count }}/{{ total_required_skills }} Skills</span>
-                        </div>
-                        <div class="metric-value-wrap">
-                            <span class="metric-number">{{ skill_coverage }}%</span>
-                        </div>
-                        <div class="metric-bar-track">
-                            <div class="metric-bar-fill" style="width: {{ skill_coverage }}%;"></div>
-                        </div>
-                        <p class="metric-hint">Prerequisite skill overlap against {{ best_career.title }} role</p>
-                    </div>
+        <h2 class="results-section-title">
+            🏆 Best Career Match
+        </h2>
 
+        <p class="section-subtitle">
+            Your strongest career recommendation based on your skills, interests, and assessment performance.
+        </p>
+
+    </div>
+
+    <div class="best-career-grid">
+
+        <!-- Best Career Match -->
+        <div class="metric-card">
+
+            <div class="metric-card-top">
+
+                <span class="metric-title">
+                    Best Career Match
+                </span>
+
+                <span class="metric-tag tag-best">
+                    {{ best_career.title }}
+                </span>
+
+            </div>
+
+            <div class="metric-value-wrap">
+
+                <span class="metric-number">
+                    {{ best_career.match }}%
+                </span>
+
+            </div>
+
+            <div class="metric-bar-track">
+
+                <div
+                    class="metric-bar-fill"
+                    style="width: {{ best_career.match }}%;">
                 </div>
+
+            </div>
+
+            <p class="metric-hint">
+                Algorithmic role fit based on your declared profile & goals
+            </p>
+
+        </div>
+
+
+        <!-- Skill Coverage -->
+        <div class="metric-card">
+
+            <div class="metric-card-top">
+
+                <span class="metric-title">
+                    Skill Coverage
+                </span>
+
+                <span class="metric-tag">
+                    {{ matching_count }}/{{ total_required_skills }} Skills
+                </span>
+
+            </div>
+
+            <div class="metric-value-wrap">
+
+                <span class="metric-number">
+                    {{ skill_coverage }}%
+                </span>
+
+            </div>
+
+            <div class="metric-bar-track">
+
+                <div
+                    class="metric-bar-fill"
+                    style="width: {{ skill_coverage }}%;">
+                </div>
+
+            </div>
+
+            <p class="metric-hint">
+                Prerequisite skill overlap against {{ best_career.title }} role
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
 
                 <!-- Readiness Summary Banner -->
                 <div class="readiness-summary-card">
@@ -235,27 +643,6 @@
 
 
             <!-- USER DECLARED SKILLS -->
-            <div class="user-skills-card">
-
-                <div class="user-skills-header">
-                    <div>
-                        <p class="section-tag">PROFILE COMPETENCIES</p>
-                        <h3>Your Declared Skills</h3>
-                    </div>
-                    <span class="skill-count-badge">{{ skills|length }} Skills Profiled</span>
-                </div>
-
-                <div class="skill-tags">
-                    {% for skill in skills %}
-                        <span class="skill-tag user-skill">
-                            {{ skill.title() }}
-                        </span>
-                    {% else %}
-                        <span class="no-skills">No skills declared. Return to profile to add skills.</span>
-                    {% endfor %}
-                </div>
-
-            </div>
 
 
             <!-- FEATURE 2: BEST CAREER & "WHY THIS CAREER MATCHES YOU" -->
@@ -308,6 +695,7 @@
 
 
             <!-- FEATURE: REAL-TIME AI CAREER MENTOR -->
+             
             {% if ai_mentor %}
             <div class="ai-mentor-wrapper">
 
@@ -671,35 +1059,7 @@
             </div>
             <!-- AI CAREER MENTOR -->
 
-<h2 class="results-section-title">
-    🤖 AI Career Mentor
-</h2>
 
-<div class="ai-mentor-card">
-
-    <div class="ai-mentor-header">
-
-        <div class="ai-icon">
-            🤖
-        </div>
-
-        <div>
-            <p class="section-tag">
-                PERSONALIZED AI GUIDANCE
-            </p>
-
-            <h2>Your Career Advice</h2>
-        </div>
-
-    </div>
-
-    <div class="ai-advice">
-
-        {{ ai_advice }}
-
-    </div>
-
-</div>
 <!-- ========================================================= -->
 <!-- AI CAREER MENTOR CHAT -->
 <!-- ========================================================= -->
